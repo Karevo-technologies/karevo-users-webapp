@@ -1,0 +1,7 @@
+- [x] Inspect routing setup in src/App.tsx to see how _unknown routes_ are handled
+- [x] Fix NotFound component to use react-router-dom Link (`src/notfound.tsx`)
+- [x] Integrate NotFound into routing for unknown routes in both auth states (`src/App.tsx`)
+- [x] Fix dashboard sidebar navigation to avoid hard reloads and allow active UI updates (`src/dashboard/_components/sidebar.tsx`)
+- [ ] Fix remaining “tabs not working”: add explicit routes for `/dashboard/home`, `/dashboard/consents`, `/dashboard/settings` in `src/App.tsx` (currently all unknown authenticated routes redirect to `/dashboard`).
+- [ ] Remove unused activeTab state once routes are explicit.
+- [ ] Run `npm run build` and `npm run lint` to confirm compilation.
