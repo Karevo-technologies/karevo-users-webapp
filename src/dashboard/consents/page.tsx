@@ -1,171 +1,168 @@
 "use client";
 
-import { useState } from "react";
-import TopBar from "../_components/topbar";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
+  Building2,
+  Landmark,
+  Pill,
+  ShieldCheck,
+  Hourglass,
+  History as HistoryIcon,
+  Check,
+  X,
+  ShieldOff,
+  ChevronRight,
+  CalendarClock,
+  Target,
+  ArrowLeft,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../../components/ui/alert-dialog";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Hospital01Icon,
-  Building02Icon,
-  CheckmarkCircle02Icon,
-  Cancel01Icon,
-  ShieldMinusIcon,
-  HourglassIcon,
-  ShieldUserIcon,
-  Clock01Icon,
-} from "@hugeicons/core-free-icons";
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
-type IconType = typeof Hospital01Icon;
-type ConsentStatus = "pending" | "active" | "expired" | "revoked" | "declined";
+/* ---------------------------------------------------------------------- */
+/* Fonts + palette                                                        */
+/* ---------------------------------------------------------------------- */
+/* Display: Fraunces (used sparingly, for org names + modal titles)       */
+/* Body: Inter                                                            */
+/* Utility/ledger: IBM Plex Mono (timestamps, durations, scope tags)      */
+/* Palette: deep clinical teal as primary, amber for pending, rose for    */
+/* revoke/decline, warm stone neutrals. Avoids the generic cream+terracotta*/
+/* and near-black+neon defaults.                                          */
 
-interface ConsentItem {
-  id: string;
-  org: string;
-  icon: IconType;
-  scope: string[];
-  metaLabel: string;
-  metaValue: string;
-  status: ConsentStatus;
-  /** 0–100, only meaningful for active items nearing expiry */
-  daysRemainingPct?: number;
-  daysRemainingLabel?: string;
-}
+const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');`;
 
-const initialPending: ConsentItem[] = [
+const fontDisplay = { fontFamily: "'Fraunces', serif" };
+const fontMono = { fontFamily: "'IBM Plex Mono', monospace" };
+
+/* ---------------------------------------------------------------------- */
+/* Data                                                                    */
+/* ---------------------------------------------------------------------- */
+
+const ORG_ICON = {
+  hospital: Building2,
+  insurer: Landmark,
+  pharmacy: Pill,
+};
+
+const initialPending = [
   {
     id: "p1",
     org: "Lagos University Teaching Hospital",
-    icon: Hospital01Icon,
+    kind: "hospital",
     scope: ["Lab results", "Immunization records"],
-    metaLabel: "Requested",
-    metaValue: "2 hours ago · asking for 30 days access",
-    status: "pending",
+    requestedAt: "2 hours ago",
+    requestedDays: 30,
+    purpose:
+      "To review your recent lab results ahead of your consultation on Aug 4.",
   },
   {
     id: "p2",
     org: "AXA Mansard Health Insurance",
-    icon: Building02Icon,
+    kind: "insurer",
     scope: ["Full medical history"],
-    metaLabel: "Requested",
-    metaValue: "Yesterday · asking for 90 days access",
-    status: "pending",
+    requestedAt: "Yesterday",
+    requestedDays: 90,
+    purpose: "To assess your claim under policy #AXM-22841.",
   },
 ];
 
-const initialActive: ConsentItem[] = [
+const initialActive = [
   {
     id: "a1",
     org: "Reddington Hospital",
-    icon: Hospital01Icon,
+    kind: "hospital",
     scope: ["Consultation notes", "Prescriptions"],
-    metaLabel: "Granted",
-    metaValue: "12 days ago",
-    status: "active",
-    daysRemainingPct: 60,
-    daysRemainingLabel: "18 days left",
+    grantedAt: "12 days ago",
+    totalDays: 30,
+    daysLeft: 18,
+    purpose: "Ongoing care for ENT follow-up treatment.",
   },
   {
     id: "a2",
     org: "Wellu Diagnostics",
-    icon: Building02Icon,
+    kind: "hospital",
     scope: ["Lab results"],
-    metaLabel: "Granted",
-    metaValue: "40 days ago",
-    status: "active",
-    daysRemainingPct: 11,
-    daysRemainingLabel: "5 days left",
+    grantedAt: "40 days ago",
+    totalDays: 45,
+    daysLeft: 5,
+    purpose: "Quarterly diagnostic panel results.",
   },
 ];
 
-const initialHistory: ConsentItem[] = [
+const initialHistory = [
   {
     id: "h1",
     org: "St. Nicholas Hospital",
-    icon: Hospital01Icon,
+    kind: "hospital",
     scope: ["Vaccination records"],
-    metaLabel: "Expired",
-    metaValue: "3 weeks ago",
     status: "expired",
+    resolvedAt: "3 weeks ago",
+    note: "Access period ended automatically. No action was taken by St. Nicholas Hospital after expiry.",
   },
   {
     id: "h2",
     org: "HealthPlus Pharmacy",
-    icon: Building02Icon,
+    kind: "pharmacy",
     scope: ["Prescription history"],
-    metaLabel: "Revoked",
-    metaValue: "2 months ago",
     status: "revoked",
+    resolvedAt: "2 months ago",
+    note: "You revoked this access early.",
   },
 ];
 
-/** Maps status → shadcn's actual Badge variants only. No colors outside the theme. */
-const statusBadge: Record<
-  ConsentStatus,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-  }
-> = {
-  pending: { label: "Pending", variant: "secondary" },
-  active: { label: "Active", variant: "default" },
-  expired: { label: "Expired", variant: "outline" },
-  revoked: { label: "Revoked", variant: "destructive" },
-  declined: { label: "Declined", variant: "outline" },
-};
+const DURATION_OPTIONS = [7, 30, 90];
 
-function StatusBadge({ status }: { status: ConsentStatus }) {
-  const s = statusBadge[status];
-  return <Badge variant={s.variant}>{s.label}</Badge>;
-}
+/* ---------------------------------------------------------------------- */
+/* Small building blocks                                                  */
+/* ---------------------------------------------------------------------- */
 
-function StatCard({
-  icon,
-  count,
-  label,
-}: {
-  icon: IconType;
-  count: number;
-  label: string;
-}) {
+function OrgIcon({ kind, tone = "primary" }) {
+  const Icon = ORG_ICON[kind] || Building2;
+  const tones = {
+    primary:
+      "bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300 ring-teal-100 dark:ring-teal-900",
+    amber:
+      "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 ring-amber-100 dark:ring-amber-900",
+    muted: "bg-muted text-muted-foreground ring-border",
+  };
   return (
-    <Card className="rounded-2xl">
-      <CardContent className="px-5 pt-6 pb-6">
-        <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <HugeiconsIcon icon={icon} size={20} strokeWidth={1.75} />
-        </div>
-        <p className="text-2xl font-semibold leading-none text-foreground">
-          {count}
-        </p>
-        <p className="mt-1 text-[13px] text-muted-foreground">{label}</p>
-      </CardContent>
-    </Card>
+    <div
+      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ${tones[tone]}`}
+    >
+      <Icon size={19} strokeWidth={1.75} />
+    </div>
   );
 }
 
-function ScopeChips({ scope }: { scope: string[] }) {
+function ScopeChips({ scope }) {
   return (
-    <div className="mt-2 flex flex-wrap gap-1.5">
+    <div className="mt-2.5 flex flex-wrap gap-1.5">
       {scope.map((s) => (
         <span
           key={s}
-          className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+          style={fontMono}
+          className="rounded-md bg-muted px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
         >
           {s}
         </span>
@@ -174,338 +171,700 @@ function ScopeChips({ scope }: { scope: string[] }) {
   );
 }
 
-function IconChip({ icon, muted }: { icon: IconType; muted?: boolean }) {
+/* Signature element: a countdown ring instead of a flat bar. It literally
+   visualises the thing that makes health-data consent different from a
+   normal permission toggle: it decays on its own, on a clock the person
+   set when they didn't fully decide it, and they can always cut it early */
+function CountdownRing({ daysLeft, totalDays, size = 44 }) {
+  const pct = Math.max(0, Math.min(1, daysLeft / totalDays));
+  const r = (size - 6) / 2;
+  const c = 2 * Math.PI * r;
+  const critical = daysLeft <= Math.max(3, totalDays * 0.15);
+  const warning = !critical && daysLeft <= totalDays * 0.3;
+  const color = critical ? "#e11d48" : warning ? "#d97706" : "#0f766e";
+
   return (
     <div
-      className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl ${
-        muted ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"
-      }`}
+      className="relative shrink-0"
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={`${daysLeft} of ${totalDays} days remaining`}
     >
-      <HugeiconsIcon icon={icon} size={19} strokeWidth={1.75} />
-    </div>
-  );
-}
-
-function PendingRow({
-  item,
-  isLast,
-  onApprove,
-  onDecline,
-}: {
-  item: ConsentItem;
-  isLast: boolean;
-  onApprove: (id: string) => void;
-  onDecline: (id: string) => void;
-}) {
-  return (
-    <div className={`py-4 ${!isLast ? "border-b border-border" : ""}`}>
-      <IconChip icon={item.icon} />
-
-      <div className="flex items-center justify-between gap-2">
-        <p className="truncate text-sm font-medium text-foreground">
-          {item.org}
-        </p>
-        <StatusBadge status={item.status} />
-      </div>
-      <p className="mt-0.5 text-[12px] text-muted-foreground">
-        {item.metaLabel} · {item.metaValue}
-      </p>
-      <ScopeChips scope={item.scope} />
-
-      <div className="mt-3 flex gap-2">
-        <Button
-          size="sm"
-          onClick={() => onApprove(item.id)}
-          className="gap-1.5"
-        >
-          <HugeiconsIcon
-            icon={CheckmarkCircle02Icon}
-            size={15}
-            strokeWidth={2}
-          />
-          Approve
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => onDecline(item.id)}
-          className="gap-1.5 text-destructive hover:text-destructive"
-        >
-          <HugeiconsIcon icon={Cancel01Icon} size={15} strokeWidth={2} />
-          Decline
-        </Button>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="#e7e5e4"
+          strokeWidth="3"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke={color}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray={c}
+          strokeDashoffset={c * (1 - pct)}
+          style={{ transition: "stroke-dashoffset 700ms ease" }}
+        />
+      </svg>
+      <div
+        className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold"
+        style={{ color, ...fontMono }}
+      >
+        {daysLeft}d
       </div>
     </div>
   );
 }
 
-function ActiveRow({
-  item,
-  isLast,
-  onRequestRevoke,
-}: {
-  item: ConsentItem;
-  isLast: boolean;
-  onRequestRevoke: (item: ConsentItem) => void;
-}) {
-  const nearExpiry = (item.daysRemainingPct ?? 100) <= 20;
-
+function StatCard({ icon: Icon, count, label, tone }) {
+  const tones = {
+    amber: "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300",
+    teal: "bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300",
+    stone: "bg-muted text-muted-foreground",
+  };
   return (
-    <div className={`py-4 ${!isLast ? "border-b border-border" : ""}`}>
-      <IconChip icon={item.icon} />
-
-      <div className="flex items-center justify-between gap-2">
-        <p className="truncate text-sm font-medium text-foreground">
-          {item.org}
-        </p>
-        <StatusBadge status={item.status} />
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <div
+        className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl ${tones[tone]}`}
+      >
+        <Icon size={18} strokeWidth={1.75} />
       </div>
-      <p className="mt-0.5 text-[12px] text-muted-foreground">
-        {item.metaLabel} · {item.metaValue}
+      <p className="text-2xl font-semibold leading-none text-foreground">
+        {count}
       </p>
-      <ScopeChips scope={item.scope} />
+      <p className="mt-1.5 text-[13px] text-muted-foreground">{label}</p>
+    </div>
+  );
+}
 
-      {item.daysRemainingPct !== undefined && (
-        <div className="mt-3">
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className={`h-full rounded-full ${nearExpiry ? "bg-destructive" : "bg-primary"}`}
-              style={{ width: `${item.daysRemainingPct}%` }}
-            />
-          </div>
-          <p
-            className={`mt-1 text-[11px] ${nearExpiry ? "text-destructive" : "text-muted-foreground"}`}
+function SectionCard({ title, subtitle, children }) {
+  return (
+    <section className="rounded-2xl border border-border bg-card">
+      <div className="flex items-baseline justify-between gap-3 border-b border-border px-5 py-4">
+        <h2
+          className="text-[15px] font-semibold text-foreground"
+          style={fontDisplay}
+        >
+          {title}
+        </h2>
+        {subtitle && (
+          <span className="text-[12px] text-muted-foreground">{subtitle}</span>
+        )}
+      </div>
+      <div className="px-5">{children}</div>
+    </section>
+  );
+}
+
+function EmptyState({ icon: Icon, label }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+        <Icon size={20} strokeWidth={1.5} />
+      </div>
+      <p className="max-w-[240px] text-[13px] text-muted-foreground">{label}</p>
+    </div>
+  );
+}
+
+/* Timeline row wrapper — a left connector rail makes sense here because
+   every list on this page genuinely is a chronological sequence of
+   consent events, not a decorative numbering scheme. */
+function TimelineRow({ children, isLast }) {
+  return (
+    <div className="relative flex gap-4 py-4">
+      {!isLast && (
+        <span className="absolute left-[21px] top-[52px] bottom-[-16px] w-px bg-border" />
+      )}
+      {children}
+    </div>
+  );
+}
+
+function Toast({ toast }) {
+  if (!toast) return null;
+  const isPositive = toast.tone === "positive";
+  return (
+    <div
+      className="fixed inset-x-0 bottom-5 z-50 flex justify-center px-4"
+      role="status"
+      aria-live="polite"
+    >
+      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-stone-900 px-4 py-3 text-white shadow-lg animate-in fade-in slide-in-from-bottom-2 dark:bg-stone-800">
+        {isPositive ? (
+          <CheckCircle2 size={16} className="shrink-0 text-teal-400" />
+        ) : (
+          <XCircle size={16} className="shrink-0 text-rose-400" />
+        )}
+        <span className="text-[13px]">{toast.message}</span>
+      </div>
+    </div>
+  );
+}
+
+function PendingRow({ item, isLast, onOpenApprove, onOpenDecline }) {
+  return (
+    <TimelineRow isLast={isLast}>
+      <OrgIcon kind={item.kind} tone="amber" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <p className="truncate text-[14px] font-medium text-foreground">
+            {item.org}
+          </p>
+          <Badge className="shrink-0 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300">
+            Pending
+          </Badge>
+        </div>
+        <p
+          style={fontMono}
+          className="mt-0.5 text-[11px] text-muted-foreground"
+        >
+          Requested {item.requestedAt} · asking for {item.requestedDays} days
+        </p>
+        <ScopeChips scope={item.scope} />
+        <div className="mt-3 flex gap-2">
+          <Button
+            size="sm"
+            onClick={() => onOpenApprove(item)}
+            className="gap-1.5 bg-teal-700 hover:bg-teal-800"
           >
-            {item.daysRemainingLabel}
+            <Check size={14} strokeWidth={2.25} />
+            Review &amp; approve
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => onOpenDecline(item)}
+            className="gap-1.5 border-border text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-700 dark:hover:text-rose-300"
+          >
+            <X size={14} strokeWidth={2.25} />
+            Decline
+          </Button>
+        </div>
+      </div>
+    </TimelineRow>
+  );
+}
+
+function ActiveRow({ item, isLast, onOpenDetails, onOpenRevoke }) {
+  return (
+    <TimelineRow isLast={isLast}>
+      <OrgIcon kind={item.kind} tone="primary" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <button
+            onClick={() => onOpenDetails(item)}
+            className="truncate text-left text-[14px] font-medium text-foreground hover:underline underline-offset-2"
+          >
+            {item.org}
+          </button>
+          <CountdownRing daysLeft={item.daysLeft} totalDays={item.totalDays} />
+        </div>
+        <p
+          style={fontMono}
+          className="mt-0.5 text-[11px] text-muted-foreground"
+        >
+          Granted {item.grantedAt}
+        </p>
+        <ScopeChips scope={item.scope} />
+        <div className="mt-3 flex gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onOpenDetails(item)}
+            className="gap-1 text-muted-foreground hover:bg-muted"
+          >
+            Details
+            <ChevronRight size={14} />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => onOpenRevoke(item)}
+            className="gap-1.5 border-border text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-700 dark:hover:text-rose-300"
+          >
+            <ShieldOff size={14} strokeWidth={2} />
+            Revoke access
+          </Button>
+        </div>
+      </div>
+    </TimelineRow>
+  );
+}
+
+const HISTORY_BADGE = {
+  expired: "border-border bg-muted text-muted-foreground",
+  revoked:
+    "border-rose-200 dark:border-rose-800 bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400",
+  declined: "border-border bg-muted text-muted-foreground",
+};
+const HISTORY_LABEL = {
+  expired: "Expired",
+  revoked: "Revoked",
+  declined: "Declined",
+};
+
+function HistoryRow({ item, isLast, onOpenDetails }) {
+  return (
+    <TimelineRow isLast={isLast}>
+      <OrgIcon kind={item.kind} tone="muted" />
+      <button
+        onClick={() => onOpenDetails(item)}
+        className="min-w-0 flex-1 text-left"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <p className="truncate text-[14px] font-medium text-muted-foreground">
+            {item.org}
+          </p>
+          <Badge
+            variant="outline"
+            className={`shrink-0 ${HISTORY_BADGE[item.status]}`}
+          >
+            {HISTORY_LABEL[item.status]}
+          </Badge>
+        </div>
+        <p style={fontMono} className="mt-0.5 text-[11px] text-muted-foreground">
+          {HISTORY_LABEL[item.status]} {item.resolvedAt}
+        </p>
+        <ScopeChips scope={item.scope} />
+      </button>
+    </TimelineRow>
+  );
+}
+
+function ApproveModal({ item, open, onOpenChange, onConfirm }) {
+  const [days, setDays] = useState(30);
+
+  useEffect(() => {
+    if (item) setDays(item.requestedDays);
+  }, [item]);
+
+  if (!item) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[420px]">
+        <DialogHeader>
+          <div className="mb-1 flex items-center gap-3">
+            <OrgIcon kind={item.kind} tone="amber" />
+            <DialogTitle style={fontDisplay} className="text-[18px]">
+              {item.org}
+            </DialogTitle>
+          </div>
+          <DialogDescription className="text-left text-[13px] leading-relaxed">
+            {item.purpose}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-1">
+          <div>
+            <p className="mb-2 text-[12px] font-medium text-muted-foreground">
+              They're requesting access to
+            </p>
+            <ScopeChips scope={item.scope} />
+          </div>
+
+          <div>
+            <p className="mb-2 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+              <CalendarClock size={13} />
+              Grant access for
+            </p>
+            <div className="flex gap-2">
+              {DURATION_OPTIONS.map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setDays(d)}
+                  style={fontMono}
+                  className={`flex-1 rounded-lg border py-2 text-[13px] font-medium transition-colors ${
+                    days === d
+                      ? "border-teal-700 bg-teal-700 text-white"
+                      : "border-border text-muted-foreground hover:border-muted-foreground"
+                  }`}
+                >
+                  {d} days
+                </button>
+              ))}
+            </div>
+            {days !== item.requestedDays && (
+              <p className="mt-2 text-[11px] text-amber-700 dark:text-amber-400">
+                They asked for {item.requestedDays} days — you're granting{" "}
+                {days}.
+              </p>
+            )}
+          </div>
+
+          <p className="rounded-lg bg-muted px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
+            You can revoke this at any time before it expires. They'll be
+            notified once you approve.
           </p>
         </div>
-      )}
 
-      <div className="mt-3 flex gap-2">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => onRequestRevoke(item)}
-          className="gap-1.5 text-destructive hover:text-destructive"
-        >
-          <HugeiconsIcon icon={ShieldMinusIcon} size={15} strokeWidth={2} />
-          Revoke access
-        </Button>
-      </div>
-    </div>
+        <DialogFooter className="gap-2 sm:gap-2">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="border-border"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => onConfirm(item, days)}
+            className="gap-1.5 bg-teal-700 hover:bg-teal-800"
+          >
+            <Check size={14} strokeWidth={2.25} />
+            Grant {days}-day access
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
-function HistoryRow({ item, isLast }: { item: ConsentItem; isLast: boolean }) {
+function DeclineDialog({ item, open, onOpenChange, onConfirm }) {
+  if (!item) return null;
   return (
-    <div
-      className={`py-4 opacity-70 ${!isLast ? "border-b border-border" : ""}`}
-    >
-      <IconChip icon={item.icon} muted />
-
-      <div className="flex items-center justify-between gap-2">
-        <p className="truncate text-sm font-medium text-foreground">
-          {item.org}
-        </p>
-        <StatusBadge status={item.status} />
-      </div>
-      <p className="mt-0.5 text-[12px] text-muted-foreground">
-        {item.metaLabel} · {item.metaValue}
-      </p>
-      <ScopeChips scope={item.scope} />
-    </div>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Decline {item.org}?</AlertDialogTitle>
+          <AlertDialogDescription>
+            They won't get access to {item.scope.join(", ").toLowerCase()}. They
+            can send a new request later if needed.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => onConfirm(item)}
+            className="bg-rose-600 text-white hover:bg-rose-700"
+          >
+            Decline request
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
-function EmptyState({ label }: { label: string }) {
+function RevokeDialog({ item, open, onOpenChange, onConfirm }) {
+  if (!item) return null;
   return (
-    <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-        <HugeiconsIcon icon={ShieldUserIcon} size={18} strokeWidth={1.75} />
-      </div>
-      <p className="text-[13px] text-muted-foreground">{label}</p>
-    </div>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Revoke access for {item.org}?</AlertDialogTitle>
+          <AlertDialogDescription>
+            They'll immediately lose access to{" "}
+            {item.scope.join(", ").toLowerCase()}. This can't be undone — they'd
+            need to send a new request.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => onConfirm(item)}
+            className="bg-rose-600 text-white hover:bg-rose-700"
+          >
+            Revoke access
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function DetailsModal({ item, open, onOpenChange, onOpenRevoke }) {
+  if (!item) return null;
+  const isActive = !item.status;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[420px]">
+        <DialogHeader>
+          <div className="mb-1 flex items-center gap-3">
+            <OrgIcon kind={item.kind} tone={isActive ? "primary" : "muted"} />
+            <DialogTitle style={fontDisplay} className="text-[18px]">
+              {item.org}
+            </DialogTitle>
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-4 py-1">
+          <div>
+            <p className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+              <Target size={13} />
+              Purpose
+            </p>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+              {item.purpose || item.note}
+            </p>
+          </div>
+
+          <div>
+            <p className="mb-2 text-[12px] font-medium text-muted-foreground">
+              Data shared
+            </p>
+            <ScopeChips scope={item.scope} />
+          </div>
+
+          {isActive ? (
+            <div className="flex items-center justify-between rounded-lg bg-muted px-3 py-2.5">
+              <div>
+                <p className="text-[12px] font-medium text-muted-foreground">
+                  Time remaining
+                </p>
+                <p style={fontMono} className="text-[11px] text-muted-foreground">
+                  Granted {item.grantedAt} · {item.totalDays}-day term
+                </p>
+              </div>
+              <CountdownRing
+                daysLeft={item.daysLeft}
+                totalDays={item.totalDays}
+                size={40}
+              />
+            </div>
+          ) : (
+            <div className="rounded-lg bg-muted px-3 py-2.5">
+              <p className="text-[12px] font-medium text-muted-foreground">
+                {HISTORY_LABEL[item.status]} {item.resolvedAt}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter className="gap-2 sm:gap-2">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="border-border"
+          >
+            Close
+          </Button>
+          {isActive && (
+            <Button
+              onClick={() => {
+                onOpenChange(false);
+                onOpenRevoke(item);
+              }}
+              variant="outline"
+              className="gap-1.5 border-border text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-700 dark:text-rose-400"
+            >
+              <ShieldOff size={14} />
+              Revoke access
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
 export default function ConsentsPage() {
-  const [pending, setPending] = useState<ConsentItem[]>(initialPending);
-  const [active, setActive] = useState<ConsentItem[]>(initialActive);
-  const [history, setHistory] = useState<ConsentItem[]>(initialHistory);
-  const [revokeTarget, setRevokeTarget] = useState<ConsentItem | null>(null);
+  const navigate = useNavigate();
+  const [pending, setPending] = useState(initialPending);
+  const [active, setActive] = useState(initialActive);
+  const [history, setHistory] = useState(initialHistory);
 
-  function handleApprove(id: string) {
-    const item = pending.find((p) => p.id === id);
-    if (!item) return;
-    setPending((prev) => prev.filter((p) => p.id !== id));
+  const [approveTarget, setApproveTarget] = useState(null);
+  const [declineTarget, setDeclineTarget] = useState(null);
+  const [revokeTarget, setRevokeTarget] = useState(null);
+  const [detailsTarget, setDetailsTarget] = useState(null);
+
+  const [toast, setToast] = useState(null);
+  const toastTimer = useRef(null);
+
+  function fireToast(message, tone = "positive") {
+    setToast({ message, tone });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3200);
+  }
+  useEffect(() => () => clearTimeout(toastTimer.current), []);
+
+  function handleApprove(item, days) {
+    setPending((prev) => prev.filter((p) => p.id !== item.id));
     setActive((prev) => [
       {
         ...item,
-        status: "active",
-        metaLabel: "Granted",
-        metaValue: "Just now",
-        daysRemainingPct: 100,
-        daysRemainingLabel: "Full term remaining",
+        grantedAt: "Just now",
+        totalDays: days,
+        daysLeft: days,
       },
       ...prev,
     ]);
+    setApproveTarget(null);
+    fireToast(`Approved ${item.org} for ${days} days`, "positive");
   }
 
-  function handleDecline(id: string) {
-    const item = pending.find((p) => p.id === id);
-    if (!item) return;
-    setPending((prev) => prev.filter((p) => p.id !== id));
+  function handleDecline(item) {
+    setPending((prev) => prev.filter((p) => p.id !== item.id));
     setHistory((prev) => [
       {
         ...item,
         status: "declined",
-        metaLabel: "Declined",
-        metaValue: "Just now",
+        resolvedAt: "just now",
+        note: "You declined this request.",
       },
       ...prev,
     ]);
+    setDeclineTarget(null);
+    fireToast(`Declined ${item.org}`, "negative");
   }
 
-  function confirmRevoke() {
-    if (!revokeTarget) return;
-    setActive((prev) => prev.filter((a) => a.id !== revokeTarget.id));
+  function handleRevoke(item) {
+    setActive((prev) => prev.filter((a) => a.id !== item.id));
     setHistory((prev) => [
       {
-        ...revokeTarget,
+        ...item,
         status: "revoked",
-        metaLabel: "Revoked",
-        metaValue: "Just now",
-        daysRemainingPct: undefined,
-        daysRemainingLabel: undefined,
+        resolvedAt: "just now",
+        note: "You revoked this access early.",
       },
       ...prev,
     ]);
     setRevokeTarget(null);
+    fireToast(`Revoked access for ${item.org}`, "negative");
   }
 
   return (
-    <div>
-      <TopBar title="Consents" />
-      <div className="mx-auto max-w-6xl space-y-5 p-4 lg:p-6">
-        {/* Summary strip */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div className="min-h-screen bg-background">
+      <style>{FONT_IMPORT}</style>
+
+      <header className="border-b border-border bg-card">
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-5">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div>
+            <h1
+              style={fontDisplay}
+              className="text-[19px] font-semibold text-foreground"
+            >
+              Consents
+            </h1>
+            <p className="text-[12.5px] text-muted-foreground">
+              Manage who can see your health records, and for how long
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-7xl space-y-5 px-5 py-6">
+        <div className="grid grid-cols-3 gap-3">
           <StatCard
-            icon={HourglassIcon}
+            icon={Hourglass}
             count={pending.length}
-            label="Pending requests"
+            label="Pending"
+            tone="amber"
           />
           <StatCard
-            icon={ShieldUserIcon}
+            icon={ShieldCheck}
             count={active.length}
-            label="Active consents"
+            label="Active"
+            tone="teal"
           />
           <StatCard
-            icon={Clock01Icon}
+            icon={HistoryIcon}
             count={history.length}
-            label="Past consents"
+            label="Past"
+            tone="stone"
           />
         </div>
 
-        {/* Pending requests */}
-        <Card className="rounded-2xl">
-          <CardHeader className="pb-0">
-            <CardTitle className="text-base font-semibold">
-              Pending requests
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-2">
-            {pending.length === 0 ? (
-              <EmptyState label="No pending requests right now." />
-            ) : (
-              <div className="flex flex-col">
-                {pending.map((item, i) => (
-                  <PendingRow
-                    key={item.id}
-                    item={item}
-                    isLast={i === pending.length - 1}
-                    onApprove={handleApprove}
-                    onDecline={handleDecline}
-                  />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <SectionCard
+          title="Pending requests"
+          subtitle={pending.length ? `${pending.length} waiting on you` : null}
+        >
+          {pending.length === 0 ? (
+            <EmptyState
+              icon={Hourglass}
+              label="No pending requests right now."
+            />
+          ) : (
+            pending.map((item, i) => (
+              <PendingRow
+                key={item.id}
+                item={item}
+                isLast={i === pending.length - 1}
+                onOpenApprove={setApproveTarget}
+                onOpenDecline={setDeclineTarget}
+              />
+            ))
+          )}
+        </SectionCard>
 
-        {/* Active consents */}
-        <Card className="rounded-2xl">
-          <CardHeader className="pb-0">
-            <CardTitle className="text-base font-semibold">
-              Active consents
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-2">
-            {active.length === 0 ? (
-              <EmptyState label="You haven't granted anyone access yet." />
-            ) : (
-              <div className="flex flex-col">
-                {active.map((item, i) => (
-                  <ActiveRow
-                    key={item.id}
-                    item={item}
-                    isLast={i === active.length - 1}
-                    onRequestRevoke={setRevokeTarget}
-                  />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <SectionCard title="Active consents">
+          {active.length === 0 ? (
+            <EmptyState
+              icon={ShieldCheck}
+              label="You haven't granted anyone access yet."
+            />
+          ) : (
+            active.map((item, i) => (
+              <ActiveRow
+                key={item.id}
+                item={item}
+                isLast={i === active.length - 1}
+                onOpenDetails={setDetailsTarget}
+                onOpenRevoke={setRevokeTarget}
+              />
+            ))
+          )}
+        </SectionCard>
 
-        {/* History */}
-        <Card className="rounded-2xl">
-          <CardHeader className="pb-0">
-            <CardTitle className="text-base font-semibold">History</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-2">
-            {history.length === 0 ? (
-              <EmptyState label="Expired, declined, and revoked consents will show up here." />
-            ) : (
-              <div className="flex flex-col">
-                {history.map((item, i) => (
-                  <HistoryRow
-                    key={item.id}
-                    item={item}
-                    isLast={i === history.length - 1}
-                  />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+        <SectionCard title="History">
+          {history.length === 0 ? (
+            <EmptyState
+              icon={HistoryIcon}
+              label="Expired, declined, and revoked consents will show up here."
+            />
+          ) : (
+            history.map((item, i) => (
+              <HistoryRow
+                key={item.id}
+                item={item}
+                isLast={i === history.length - 1}
+                onOpenDetails={setDetailsTarget}
+              />
+            ))
+          )}
+        </SectionCard>
+      </main>
 
-      <AlertDialog
+      <ApproveModal
+        item={approveTarget}
+        open={!!approveTarget}
+        onOpenChange={(o) => !o && setApproveTarget(null)}
+        onConfirm={handleApprove}
+      />
+      <DeclineDialog
+        item={declineTarget}
+        open={!!declineTarget}
+        onOpenChange={(o) => !o && setDeclineTarget(null)}
+        onConfirm={handleDecline}
+      />
+      <RevokeDialog
+        item={revokeTarget}
         open={!!revokeTarget}
-        onOpenChange={(open: boolean) => !open && setRevokeTarget(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Revoke access for {revokeTarget?.org}?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              They will immediately lose access to{" "}
-              {revokeTarget?.scope.join(", ").toLowerCase()}. You can't undo
-              this — they'd need to send a new request.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmRevoke}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Revoke access
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onOpenChange={(o) => !o && setRevokeTarget(null)}
+        onConfirm={handleRevoke}
+      />
+      <DetailsModal
+        item={detailsTarget}
+        open={!!detailsTarget}
+        onOpenChange={(o) => !o && setDetailsTarget(null)}
+        onOpenRevoke={setRevokeTarget}
+      />
+
+      <Toast toast={toast} />
     </div>
   );
 }

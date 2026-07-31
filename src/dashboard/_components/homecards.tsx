@@ -1,9 +1,11 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "../../components/ui/card";
+import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Shield01Icon,
-
   ScanIcon,
   Key01Icon,
   SparklesIcon,
@@ -91,10 +93,7 @@ const LedgerCard = ({
   icon,
   onMore,
 }: LedgerCardProps) => (
-  /* Enforces single horizontal line layout on mobile and desktop viewports to center the arrow button */
   <div className="flex flex-row items-center justify-between gap-4 w-full h-full">
-    
-    {/* Left side column maintains your exact original stacked icon, titles, and layout formatting */}
     <div className="flex flex-col gap-4 flex-1 min-w-0">
       <div
         className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl"
@@ -132,7 +131,6 @@ const LedgerCard = ({
       </div>
     </div>
 
-    {/* Right arrow action button perfectly centered relative to the vertical card frame bounds */}
     {onMore && (
       <div className="flex shrink-0 items-center justify-center">
         <button
@@ -144,8 +142,12 @@ const LedgerCard = ({
             background: "var(--kv-more-bg)",
             color: "var(--kv-more-fg)",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--kv-more-bg-hover)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "var(--kv-more-bg)")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "var(--kv-more-bg-hover)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = "var(--kv-more-bg)")
+          }
         >
           <HugeiconsIcon icon={ArrowRight01Icon} size={18} strokeWidth={2} />
         </button>
@@ -170,9 +172,24 @@ function SecurityPattern({ opacity = 0.14 }: { opacity?: number }) {
           height="40"
           patternUnits="userSpaceOnUse"
         >
-          <path d="M0 20 Q10 4 20 20 T40 20" fill="none" stroke="#FFFFFF" strokeWidth="0.6" />
-          <path d="M0 30 Q10 14 20 30 T40 30" fill="none" stroke="#FFFFFF" strokeWidth="0.5" />
-          <path d="M0 10 Q10 -6 20 10 T40 10" fill="none" stroke="#FFFFFF" strokeWidth="0.4" />
+          <path
+            d="M0 20 Q10 4 20 20 T40 20"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="0.6"
+          />
+          <path
+            d="M0 30 Q10 14 20 30 T40 30"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="0.5"
+          />
+          <path
+            d="M0 10 Q10 -6 20 10 T40 10"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="0.4"
+          />
         </pattern>
       </defs>
       <rect width="400" height="252" fill="url(#kv-guilloche)" />
@@ -187,15 +204,21 @@ interface FieldRowProps {
 
 const FieldRow = ({ label, value }: FieldRowProps) => (
   <div>
-    <div className="kv-mono text-[8px] uppercase tracking-[0.14em] text-white/45">{label}</div>
-    <div className="kv-display text-[12.5px] font-semibold leading-tight text-white">{value}</div>
+    <div className="kv-mono text-[8px] uppercase tracking-[0.14em] text-white/45">
+      {label}
+    </div>
+    <div className="kv-display text-[12.5px] font-semibold leading-tight text-white">
+      {value}
+    </div>
   </div>
 );
 
 function IdCardFlip() {
   const [flipped, setFlipped] = useState(false);
 
-  function toggle() { setFlipped((f) => !f); }
+  function toggle() {
+    setFlipped((f) => !f);
+  }
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -239,34 +262,60 @@ function IdCardFlip() {
             }}
           >
             <SecurityPattern />
-            <div className="kv-display pointer-events-none absolute -right-4 top-1/2 select-none text-[64px] font-bold text-white/[0.05]" style={{ transform: "translateY(-50%) rotate(-10deg)" }}>
+            <div
+              className="kv-display pointer-events-none absolute -right-4 top-1/2 select-none text-[64px] font-bold text-white/[0.05]"
+              style={{ transform: "translateY(-50%) rotate(-10deg)" }}
+            >
               KAREVO
             </div>
             <div className="relative flex h-full flex-col justify-between p-3.5">
               <div className="flex items-start justify-between">
-                <div className="h-6 w-8 rounded-[3px]" style={{ background: `linear-gradient(155deg, ${c.chipGoldFrom} 0%, ${c.chipGoldTo} 100%)`, boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.15)" }} />
-                <div className="text-right">
-                  <div className="kv-display text-[13px] font-bold leading-none text-white">KAREVO</div>
-                  <div className="kv-mono mt-0.5 text-[7px] uppercase tracking-[0.16em] text-white/55">Digital Health ID</div>
+                <div className="kv-display text-[13px] font-bold leading-none text-white">
+                  KAREVO
+                  <div className="kv-mono mt-0.5 text-[7px] uppercase tracking-[0.16em] text-white/55">
+                    Digital Health ID
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="relative flex h-[62px] w-[50px] shrink-0 items-center justify-center overflow-hidden rounded-[4px] border border-white/25" style={{ background: "rgba(255,255,255,0.08)" }}>
-                  <HugeiconsIcon icon={UserIcon} size={28} className="text-white/40" />
-                  <span className="kv-mono absolute bottom-0.5 text-[5px] uppercase tracking-wider text-white/35">PHOTO</span>
+                <div
+                  className="relative flex h-[62px] w-[50px] shrink-0 items-center justify-center overflow-hidden rounded-[4px] border border-white/25"
+                  style={{ background: "rgba(255,255,255,0.08)" }}
+                >
+                  <HugeiconsIcon
+                    icon={UserIcon}
+                    size={28}
+                    className="text-white/40"
+                  />
+                  <span className="kv-mono absolute bottom-0.5 text-[5px] uppercase tracking-wider text-white/35">
+                    PHOTO
+                  </span>
                 </div>
                 <div className="grid flex-1 grid-cols-2 gap-x-3 gap-y-1.5">
-                  {fields.map((f) => <FieldRow key={f.label} label={f.label} value={f.value} />)}
+                  {fields.map((f) => (
+                    <FieldRow key={f.label} label={f.label} value={f.value} />
+                  ))}
                 </div>
               </div>
-              <div className="-mx-3.5 -mb-3.5 flex items-center justify-between px-3.5 py-2" style={{ background: "rgba(0,0,0,0.18)" }}>
+              <div
+                className="-mx-3.5 -mb-3.5 flex items-center justify-between px-3.5 py-2"
+                style={{ background: "rgba(0,0,0,0.18)" }}
+              >
                 <div>
-                  <div className="kv-mono text-[7px] uppercase tracking-[0.14em] text-white/45">Passport No.</div>
-                  <div className="kv-mono text-[10.5px] font-medium text-white">A01 234567</div>
+                  <div className="kv-mono text-[7px] uppercase tracking-[0.14em] text-white/45">
+                    Passport No.
+                  </div>
+                  <div className="kv-mono text-[10.5px] font-medium text-white">
+                    A01 234567
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="kv-mono text-[7px] uppercase tracking-[0.14em] text-white/45">Karevo ID</div>
-                  <div className="kv-mono text-[10.5px] font-medium text-white">KV-2847-9931</div>
+                  <div className="kv-mono text-[7px] uppercase tracking-[0.14em] text-white/45">
+                    Karevo ID
+                  </div>
+                  <div className="kv-mono text-[10.5px] font-medium text-white">
+                    KV-2847-9931
+                  </div>
                 </div>
               </div>
             </div>
@@ -284,20 +333,54 @@ function IdCardFlip() {
           >
             <SecurityPattern opacity={0.1} />
             <div className="relative flex h-full flex-col items-center justify-center gap-2 p-4">
-              <div className="w-full" style={{ background: "rgba(0,0,0,0.25)", height: "10px", marginTop: "-16px" }} />
-              <span className="kv-mono text-[8px] uppercase tracking-[0.2em] text-white/55">Scan to verify</span>
-              <div className="relative overflow-hidden rounded-lg p-2" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                <div className="kv-sheen pointer-events-none absolute left-0 top-0 h-1/3 w-full" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0) 100%)" }} />
-                <div className="relative grid grid-cols-9 gap-[2px] rounded-md bg-white p-2" role="img" aria-label="Verified identity QR code">
+              <div
+                className="w-full"
+                style={{
+                  background: "rgba(0,0,0,0.25)",
+                  height: "10px",
+                  marginTop: "-16px",
+                }}
+              />
+              <span className="kv-mono text-[8px] uppercase tracking-[0.2em] text-white/55">
+                Scan to verify
+              </span>
+              <div
+                className="relative overflow-hidden rounded-lg p-2"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                <div
+                  className="kv-sheen pointer-events-none absolute left-0 top-0 h-1/3 w-full"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0) 100%)",
+                  }}
+                />
+                <div
+                  className="relative grid grid-cols-9 gap-[2px] rounded-md bg-white p-2"
+                  role="img"
+                  aria-label="Verified identity QR code"
+                >
                   {Array.from({ length: 81 }).map((_, i) => {
                     const on = (i * 19 + (i % 9)) % 8 < 3;
-                    return <div key={i} className="h-[6px] w-[6px] rounded-[1px]" style={{ background: on ? "#10151C" : "#ECEEF2" }} />;
+                    return (
+                      <div
+                        key={i}
+                        className="h-[6px] w-[6px] rounded-[1px]"
+                        style={{ background: on ? "#10151C" : "#ECEEF2" }}
+                      />
+                    );
                   })}
                 </div>
               </div>
-              <div className="kv-mono text-[10px] font-medium text-white">KV-2847-9931</div>
+              <div className="kv-mono text-[10px] font-medium text-white">
+                KV-2847-9931
+              </div>
               <p className="kv-body max-w-[220px] text-center text-[8.5px] leading-snug text-white/45">
-                Property of Karevo Health Systems. If found, please return to the nearest partner clinic.
+                Property of Karevo Health Systems. If found, please return to
+                the nearest partner clinic.
               </p>
             </div>
           </div>
@@ -309,9 +392,18 @@ function IdCardFlip() {
 
 function KIdBadge() {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 rounded-[28px] px-7 py-6 lg:py-24" style={{ background: "var(--kv-chip-bg)", border: "1px solid var(--kv-card-border)" }}>
+    <div
+      className="flex h-full flex-col items-center justify-center gap-4 rounded-[28px] px-7 py-6 lg:py-24"
+      style={{
+        background: "var(--kv-chip-bg)",
+        border: "1px solid var(--kv-card-border)",
+      }}
+    >
       <IdCardFlip />
-      <div className="flex items-center gap-2" style={{ color: "var(--kv-ink-soft)" }}>
+      <div
+        className="flex items-center gap-2"
+        style={{ color: "var(--kv-ink-soft)" }}
+      >
         <HugeiconsIcon icon={FlipHorizontalIcon} size={14} strokeWidth={1.75} />
         <span className="kv-body text-[12px]">Tap the card to flip</span>
       </div>
@@ -319,10 +411,15 @@ function KIdBadge() {
   );
 }
 
-const cardStyle = { background: "var(--kv-card-bg)", border: "1px solid var(--kv-card-border)" };
-const cardBase = "rounded-[24px] shadow-[0_1px_2px_rgba(16,21,28,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(16,21,28,0.06)]";
+const cardStyle = {
+  background: "var(--kv-card-bg)",
+  border: "1px solid var(--kv-card-border)",
+};
+const cardBase =
+  "rounded-[24px] shadow-[0_1px_2px_rgba(16,21,28,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(16,21,28,0.06)]";
 
 export default function HomeCards() {
+  const navigate = useNavigate();
   const [activeTip, setActiveTip] = useState(0);
 
   const tips = [
@@ -343,6 +440,11 @@ export default function HomeCards() {
     return () => clearInterval(timer);
   }, [tips.length]);
 
+  // Master click routing handler across carousel states
+  const handleCardRedirect = () => {
+    navigate("/dashboard/security");
+  };
+
   return (
     <div className="kv-root kv-body">
       <Fonts />
@@ -355,45 +457,100 @@ export default function HomeCards() {
 
         {/* Right column: tips, then scan + token layout channels */}
         <div className="flex flex-col gap-5 lg:col-span-2">
-          <Card className={`${cardBase} flex-1 border-0`} style={cardStyle}>
+          {/* ── UPDATED CAROUSEL CONTAINER CARD ── */}
+          <Card
+            className={`${cardBase} flex-1 border-0 cursor-pointer select-none focus-visible:ring-2`}
+            style={cardStyle}
+            onClick={handleCardRedirect}
+          >
             <CardContent className="flex h-full flex-col gap-6 pt-6">
               <div className="flex items-center justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl" style={{ background: "var(--kv-chip-bg)", color: "var(--kv-chip-fg)" }}>
-                  <HugeiconsIcon icon={Shield01Icon} size={20} strokeWidth={1.75} />
+                <div
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl"
+                  style={{
+                    background: "var(--kv-chip-bg)",
+                    color: "var(--kv-chip-fg)",
+                  }}
+                >
+                  <HugeiconsIcon
+                    icon={Shield01Icon}
+                    size={20}
+                    strokeWidth={1.75}
+                  />
                 </div>
-                <div className="flex items-center gap-1.5">
+
+                {/* Manual control nodes are preserved. stopPropagation blocks parent row capture triggers */}
+                <div
+                  className="flex items-center gap-1.5"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button
                     type="button"
-                    onClick={() => setActiveTip((p) => (p - 1 + tips.length) % tips.length)}
+                    onClick={() =>
+                      setActiveTip((p) => (p - 1 + tips.length) % tips.length)
+                    }
                     className="rounded-full border p-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2"
-                    style={{ borderColor: "var(--kv-card-border)", color: "var(--kv-ink-soft)" }}
+                    style={{
+                      borderColor: "var(--kv-card-border)",
+                      color: "var(--kv-ink-soft)",
+                    }}
                   >
-                    <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={2} />
+                    <HugeiconsIcon
+                      icon={ArrowLeft01Icon}
+                      size={14}
+                      strokeWidth={2}
+                    />
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTip((p) => (p + 1) % tips.length)}
                     className="rounded-full border p-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2"
-                    style={{ borderColor: "var(--kv-card-border)", color: "var(--kv-ink-soft)" }}
+                    style={{
+                      borderColor: "var(--kv-card-border)",
+                      color: "var(--kv-ink-soft)",
+                    }}
                   >
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={14} strokeWidth={2} />
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      size={14}
+                      strokeWidth={2}
+                    />
                   </button>
                 </div>
               </div>
 
-              <div className="flex-1 border-t pt-5" style={{ borderColor: "var(--kv-card-border)" }}>
-                <div className="flex items-center gap-2">
-                  <h3 className="kv-display text-[16px] font-semibold" style={{ color: "var(--kv-ink)" }}>
-                    {tips[activeTip].title}
-                  </h3>
+              {/* Layout Content wrapper stays un-compromised */}
+              <div
+                className="flex-1 border-t pt-5"
+                style={{ borderColor: "var(--kv-card-border)" }}
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3
+                      className="kv-display text-[16px] font-semibold"
+                      style={{ color: "var(--kv-ink)" }}
+                    >
+                      {tips[activeTip].title}
+                    </h3>
+                  </div>
+                  <p
+                    className="kv-body mt-1.5 text-[13.5px] leading-relaxed"
+                    style={{ color: "var(--kv-ink-soft)" }}
+                  >
+                    {tips[activeTip].description}
+                  </p>
                 </div>
-                <p className="kv-body mt-1.5 text-[13.5px] leading-relaxed" style={{ color: "var(--kv-ink-soft)" }}>
-                  {tips[activeTip].description}
-                </p>
               </div>
 
-              <div className="flex items-center justify-between border-t pt-4" style={{ borderColor: "var(--kv-card-border)" }}>
-                <div className="flex gap-2">
+              {/* Bottom Carousel Pagination Tracker with stopPropagation support */}
+              <div
+                className="flex items-center justify-between border-t pt-4"
+                style={{ borderColor: "var(--kv-card-border)" }}
+              >
+                <div
+                  className="flex gap-2"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {tips.map((_, i) => (
                     <button
                       key={i}
@@ -402,12 +559,16 @@ export default function HomeCards() {
                       className="h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2"
                       style={{
                         width: i === activeTip ? "22px" : "6px",
-                        background: i === activeTip ? c.signal : "var(--kv-card-border)",
+                        background:
+                          i === activeTip ? c.signal : "var(--kv-card-border)",
                       }}
                     />
                   ))}
                 </div>
-                <span className="kv-mono text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--kv-ink-soft)" }}>
+                <span
+                  className="kv-mono text-[10px] font-medium uppercase tracking-wider"
+                  style={{ color: "var(--kv-ink-soft)" }}
+                >
                   {activeTip + 1} / {tips.length}
                 </span>
               </div>
@@ -416,25 +577,45 @@ export default function HomeCards() {
 
           {/* Dual balanced scan and temporary share tokens rows */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Card className={`${cardBase} border-0`} style={cardStyle}>
+            <Card
+              className={`${cardBase} border-0 cursor-pointer select-none`}
+              style={cardStyle}
+              onClick={() => navigate("/dashboard/scan")}
+            >
               <CardContent className="pt-6 h-full">
                 <LedgerCard
                   icon={ScanIcon}
                   title="Scan a QR code"
                   description="Scan the QR code to share your identity data"
-                  onMore={{ label: "Open QR scanner" }}
+                  onMore={{
+                    label: "Open QR scanner",
+                    onClick: (e?: React.MouseEvent) => {
+                      if (e) e.stopPropagation();
+                      navigate("/dashboard/scan");
+                    },
+                  }}
                 />
               </CardContent>
             </Card>
 
-            <Card className={`${cardBase} border-0`} style={cardStyle}>
+            <Card
+              className={`${cardBase} border-0 cursor-pointer select-none`}
+              style={cardStyle}
+              onClick={() => navigate("/dashboard/share-token")}
+            >
               <CardContent className="pt-6 h-full">
                 <LedgerCard
                   icon={Key01Icon}
                   tag="Temporary access"
                   title="Create a share token"
                   description="Generate a time-limited code so a clinic can view specific records nothing more."
-                  onMore={{ label: "Create a share token" }}
+                  onMore={{
+                    label: "Create a share token",
+                    onClick: (e?: React.MouseEvent) => {
+                      if (e) e.stopPropagation();
+                      navigate("/dashboard/share-token");
+                    },
+                  }}
                 />
               </CardContent>
             </Card>
