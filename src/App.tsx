@@ -8,7 +8,8 @@ import DashboardLayout from "./dashboard/layout";
 import UsersPage from "./dashboard/home/page";
 import HospitalsLabHistoryPage from "./dashboard/consents/page";
 import SettingsPage from "./dashboard/settings/page";
-
+import SafeguardPage from "./dashboard/security/page";
+import QrScanPage from "./dashboard/scan/page";
 
 type DashboardTabKey = "home" | "hospitals" | "settings" | "logout";
 
@@ -89,6 +90,28 @@ export default function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <SettingsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/security"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SafeguardPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/scan"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <QrScanPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
