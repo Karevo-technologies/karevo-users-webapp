@@ -5,10 +5,19 @@ import { BellIcon } from "@hugeicons/core-free-icons";
 import ThemeToggle from "./themetoggle";
 import { useAuth } from "../../context/AuthContext";
 
-export default function TopBar({ title }: { title: string }) {
+export default function TopBar({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-cloud bg-paper/70 px-4 backdrop-blur lg:px-6">
-      <h1 className="text-lg font-semibold text-ink">{title}</h1>
+      <div>
+        <h1 className="text-lg font-semibold text-ink">{title}</h1>
+        {subtitle && <p className="text-xs text-ink-soft">{subtitle}</p>}
+      </div>
 
       <div className="flex items-center gap-2">
         <button

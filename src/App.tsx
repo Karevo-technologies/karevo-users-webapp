@@ -8,6 +8,9 @@ import DashboardLayout from "./dashboard/layout";
 import UsersPage from "./dashboard/home/page";
 import HospitalsLabHistoryPage from "./dashboard/consents/page";
 import SettingsPage from "./dashboard/settings/page";
+import NotificationsPage from "./dashboard/settings/notifications/page";
+import LinkedIdsPage from "./dashboard/settings/linked-ids/page";
+import OfflineSharingPage from "./dashboard/settings/offline-sharing/page";
 import SafeguardPage from "./dashboard/security/page";
 import QrScanPage from "./dashboard/scan/page";
 
@@ -90,6 +93,39 @@ export default function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <SettingsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/settings/notifications"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <NotificationsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/settings/linked-ids"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <LinkedIdsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/settings/offline-sharing"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <OfflineSharingPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
