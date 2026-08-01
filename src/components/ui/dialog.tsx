@@ -15,6 +15,8 @@ export function Dialog(props: {
   onOpenChange?: (open: boolean) => void;
   children?: React.ReactNode;
 }) {
+  const shouldShow = props.open ?? false;
+  if (!shouldShow) return null;
   return <>{props.children}</>;
 }
 
