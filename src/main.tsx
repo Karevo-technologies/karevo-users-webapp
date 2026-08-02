@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import "./index.css";
 import App from "./App";
+import { TourProvider } from "./dashboard/_components/DashboardTour";
 import { AuthProvider } from "./context/AuthContext";
 import { QueryClient } from "@tanstack/react-query";
 
@@ -17,7 +18,9 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <TourProvider>
+            <App />
+          </TourProvider>
         </QueryClientProvider>
       </AuthProvider>
     </BrowserRouter>

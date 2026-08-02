@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowLeft01Icon,
   Key01Icon,
-  CheckmarkCircle02Icon,
   Clock01Icon,
   NoteIcon,
   QrCodeIcon,
@@ -24,17 +23,11 @@ const c = {
   danger: "#DF4949",
 };
 
-interface TokenConfig {
-  categories: string[];
-  expiry: string;
-  label: string;
-}
-
 export default function CreateShareTokenPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   // Form Parameters

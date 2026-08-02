@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import TopBar from "../_components/topbar";
+import { TourCard } from "./TourCard";
 import {
   Dialog,
   DialogContent,
@@ -57,8 +58,6 @@ const fontDisplay = {
 const fontMono = {
   fontFamily: "ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace",
 };
-
-const AUTO_SIGN_OUT_OPTIONS = [5, 15, 30];
 
 const initialDevices = [
   {
@@ -746,8 +745,8 @@ export default function SettingsPage() {
   const navigate = useNavigate();
   const [ninLock, setNinLock] = useState(true);
   const [biometrics, setBiometrics] = useState(false);
-  const [autoSignOut, setAutoSignOut] = useState(true);
-  const [autoSignOutMinutes, setAutoSignOutMinutes] = useState(5);
+  const [autoSignOut] = useState(true);
+  const [autoSignOutMinutes] = useState(5);
 
   const [devices, setDevices] = useState(initialDevices);
 
@@ -923,7 +922,9 @@ export default function SettingsPage() {
         subtitle="Manage your account, security, and preferences"
       />
 
-      <main className="mx-auto max-w-2xl space-y-5 px-5 py-6">
+      <main className="mx-auto max-w-4xl space-y-5 px-5 py-6 lg:max-w-none lg:px-8">
+        <TourCard />
+
         <SectionCard title="Account">
           {accountRows.map((row, i) => (
             <SettingsRow

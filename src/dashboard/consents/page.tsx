@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Building2,
@@ -18,6 +18,7 @@ import {
   ArrowLeft,
   CheckCircle2,
   XCircle,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,16 +58,57 @@ const fontMono = {
 };
 
 /* ---------------------------------------------------------------------- */
+/* Types                                                                   */
+/* ---------------------------------------------------------------------- */
+
+type OrgKind = "hospital" | "insurer" | "pharmacy";
+
+interface PendingConsent {
+  id: string;
+  org: string;
+  kind: OrgKind;
+  scope: string[];
+  requestedAt: string;
+  requestedDays: number;
+  purpose: string;
+}
+
+interface ActiveConsent {
+  id: string;
+  org: string;
+  kind: OrgKind;
+  scope: string[];
+  grantedAt: string;
+  totalDays: number;
+  daysLeft: number;
+  purpose: string;
+}
+
+type HistoryStatus = "expired" | "revoked" | "declined";
+
+interface HistoryConsent {
+  id: string;
+  org: string;
+  kind: OrgKind;
+  scope: string[];
+  status: HistoryStatus;
+  resolvedAt: string;
+  note: string;
+}
+
+type ToastState = { message: string; tone: string } | null;
+
+/* ---------------------------------------------------------------------- */
 /* Data                                                                    */
 /* ---------------------------------------------------------------------- */
 
-const ORG_ICON = {
+const ORG_ICON: Record<OrgKind, LucideIcon> = {
   hospital: Building2,
   insurer: Landmark,
   pharmacy: Pill,
 };
 
-const initialPending = [
+const initialPending: PendingConsent[] = [
   {
     id: "p1",
     org: "Lagos University Teaching Hospital",
@@ -88,7 +130,7 @@ const initialPending = [
   },
 ];
 
-const initialActive = [
+const initialActive: ActiveConsent[] = [
   {
     id: "a1",
     org: "Reddington Hospital",
@@ -111,7 +153,7 @@ const initialActive = [
   },
 ];
 
-const initialHistory = [
+const initialHistory: HistoryConsent[] = [
   {
     id: "h1",
     org: "St. Nicholas Hospital",
@@ -138,9 +180,15 @@ const DURATION_OPTIONS = [7, 30, 90];
 /* Small building blocks                                                  */
 /* ---------------------------------------------------------------------- */
 
-function OrgIcon({ kind, tone = "primary" }) {
+function OrgIcon({
+  kind,
+  tone = "primary",
+}: {
+  kind: OrgKind;
+  tone?: "primary" | "muted";
+}) {
   const Icon = ORG_ICON[kind] || Building2;
-  const tones = {
+  const tones: Record<"primary" | "muted", string> = {
     primary:
       "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 ring-blue-100 dark:ring-blue-900",
     muted: "bg-muted text-muted-foreground ring-border",
@@ -154,7 +202,7 @@ function OrgIcon({ kind, tone = "primary" }) {
   );
 }
 
-function ScopeChips({ scope }) {
+function ScopeChips({ scope }: { scope: string[] }) {
   return (
     <div className="mt-2.5 flex flex-wrap gap-1.5">
       {scope.map((s) => (
@@ -174,7 +222,15 @@ function ScopeChips({ scope }) {
    visualises the thing that makes health-data consent different from a
    normal permission toggle: it decays on its own, on a clock the person
    set when they didn't fully decide it, and they can always cut it early */
-function CountdownRing({ daysLeft, totalDays, size = 44 }) {
+function CountdownRing({
+  daysLeft,
+  totalDays,
+  size = 44,
+}: {
+  daysLeft: number;
+  totalDays: number;
+  size?: number;
+}) {
   const pct = Math.max(0, Math.min(1, daysLeft / totalDays));
   const r = (size - 6) / 2;
   const c = 2 * Math.PI * r;
@@ -221,8 +277,18 @@ function CountdownRing({ daysLeft, totalDays, size = 44 }) {
   );
 }
 
-function StatCard({ icon: Icon, count, label, tone }) {
-  const tones = {
+function StatCard({
+  icon: Icon,
+  count,
+  label,
+  tone,
+}: {
+  icon: LucideIcon;
+  count: number;
+  label: string;
+  tone: "primary" | "muted";
+}) {
+  const tones: Record<"primary" | "muted", string> = {
     primary: "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300",
     muted: "bg-muted text-muted-foreground",
   };
@@ -241,7 +307,15 @@ function StatCard({ icon: Icon, count, label, tone }) {
   );
 }
 
-function SectionCard({ title, subtitle, children }) {
+function SectionCard({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle?: string | null;
+  children: ReactNode;
+}) {
   return (
     <section className="rounded-2xl border border-border bg-card">
       <div className="flex items-baseline justify-between gap-3 border-b border-border px-5 py-4">
@@ -260,7 +334,7 @@ function SectionCard({ title, subtitle, children }) {
   );
 }
 
-function EmptyState({ icon: Icon, label }) {
+function EmptyState({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
@@ -274,7 +348,13 @@ function EmptyState({ icon: Icon, label }) {
 /* Timeline row wrapper — a left connector rail makes sense here because
    every list on this page genuinely is a chronological sequence of
    consent events, not a decorative numbering scheme. */
-function TimelineRow({ children, isLast }) {
+function TimelineRow({
+  children,
+  isLast,
+}: {
+  children: ReactNode;
+  isLast: boolean;
+}) {
   return (
     <div className="relative flex gap-4 py-4">
       {!isLast && (
@@ -285,7 +365,7 @@ function TimelineRow({ children, isLast }) {
   );
 }
 
-function Toast({ toast }) {
+function Toast({ toast }: { toast: ToastState }) {
   if (!toast) return null;
   const isPositive = toast.tone === "positive";
   return (
@@ -306,7 +386,17 @@ function Toast({ toast }) {
   );
 }
 
-function PendingRow({ item, isLast, onOpenApprove, onOpenDecline }) {
+function PendingRow({
+  item,
+  isLast,
+  onOpenApprove,
+  onOpenDecline,
+}: {
+  item: PendingConsent;
+  isLast: boolean;
+  onOpenApprove: (item: PendingConsent) => void;
+  onOpenDecline: (item: PendingConsent) => void;
+}) {
   return (
     <TimelineRow isLast={isLast}>
       <OrgIcon kind={item.kind} tone="primary" />
@@ -350,7 +440,17 @@ function PendingRow({ item, isLast, onOpenApprove, onOpenDecline }) {
   );
 }
 
-function ActiveRow({ item, isLast, onOpenDetails, onOpenRevoke }) {
+function ActiveRow({
+  item,
+  isLast,
+  onOpenDetails,
+  onOpenRevoke,
+}: {
+  item: ActiveConsent;
+  isLast: boolean;
+  onOpenDetails: (item: ActiveConsent) => void;
+  onOpenRevoke: (item: ActiveConsent) => void;
+}) {
   return (
     <TimelineRow isLast={isLast}>
       <OrgIcon kind={item.kind} tone="primary" />
@@ -396,19 +496,27 @@ function ActiveRow({ item, isLast, onOpenDetails, onOpenRevoke }) {
   );
 }
 
-const HISTORY_BADGE = {
+const HISTORY_BADGE: Record<HistoryStatus, string> = {
   expired: "border-border bg-muted text-muted-foreground",
   revoked:
     "border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
   declined: "border-border bg-muted text-muted-foreground",
 };
-const HISTORY_LABEL = {
+const HISTORY_LABEL: Record<HistoryStatus, string> = {
   expired: "Expired",
   revoked: "Revoked",
   declined: "Declined",
 };
 
-function HistoryRow({ item, isLast, onOpenDetails }) {
+function HistoryRow({
+  item,
+  isLast,
+  onOpenDetails,
+}: {
+  item: HistoryConsent;
+  isLast: boolean;
+  onOpenDetails: (item: HistoryConsent) => void;
+}) {
   return (
     <TimelineRow isLast={isLast}>
       <OrgIcon kind={item.kind} tone="muted" />
@@ -439,7 +547,17 @@ function HistoryRow({ item, isLast, onOpenDetails }) {
   );
 }
 
-function ApproveModal({ item, open, onOpenChange, onConfirm }) {
+function ApproveModal({
+  item,
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  item: PendingConsent | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (item: PendingConsent, days: number) => void;
+}) {
   const [days, setDays] = useState(30);
 
   useEffect(() => {
@@ -527,7 +645,17 @@ function ApproveModal({ item, open, onOpenChange, onConfirm }) {
   );
 }
 
-function DeclineDialog({ item, open, onOpenChange, onConfirm }) {
+function DeclineDialog({
+  item,
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  item: PendingConsent | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (item: PendingConsent) => void;
+}) {
   if (!item) return null;
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -553,7 +681,17 @@ function DeclineDialog({ item, open, onOpenChange, onConfirm }) {
   );
 }
 
-function RevokeDialog({ item, open, onOpenChange, onConfirm }) {
+function RevokeDialog({
+  item,
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  item: ActiveConsent | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (item: ActiveConsent) => void;
+}) {
   if (!item) return null;
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -580,9 +718,22 @@ function RevokeDialog({ item, open, onOpenChange, onConfirm }) {
   );
 }
 
-function DetailsModal({ item, open, onOpenChange, onOpenRevoke }) {
+type DetailsItem = ActiveConsent | HistoryConsent;
+
+function DetailsModal({
+  item,
+  open,
+  onOpenChange,
+  onOpenRevoke,
+}: {
+  item: DetailsItem | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onOpenRevoke: (item: ActiveConsent) => void;
+}) {
   if (!item) return null;
-  const isActive = !item.status;
+  const isActive = !("status" in item);
+  const detailText = isActive ? item.purpose : item.note;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -603,7 +754,7 @@ function DetailsModal({ item, open, onOpenChange, onOpenRevoke }) {
               Purpose
             </p>
             <p className="text-[13px] leading-relaxed text-muted-foreground">
-              {item.purpose || item.note}
+              {detailText}
             </p>
           </div>
 
@@ -671,26 +822,32 @@ function DetailsModal({ item, open, onOpenChange, onOpenRevoke }) {
 
 export default function ConsentsPage() {
   const navigate = useNavigate();
-  const [pending, setPending] = useState(initialPending);
-  const [active, setActive] = useState(initialActive);
-  const [history, setHistory] = useState(initialHistory);
+  const [pending, setPending] = useState<PendingConsent[]>(initialPending);
+  const [active, setActive] = useState<ActiveConsent[]>(initialActive);
+  const [history, setHistory] = useState<HistoryConsent[]>(initialHistory);
 
-  const [approveTarget, setApproveTarget] = useState(null);
-  const [declineTarget, setDeclineTarget] = useState(null);
-  const [revokeTarget, setRevokeTarget] = useState(null);
-  const [detailsTarget, setDetailsTarget] = useState(null);
+  const [approveTarget, setApproveTarget] = useState<PendingConsent | null>(
+    null,
+  );
+  const [declineTarget, setDeclineTarget] = useState<PendingConsent | null>(
+    null,
+  );
+  const [revokeTarget, setRevokeTarget] = useState<ActiveConsent | null>(null);
+  const [detailsTarget, setDetailsTarget] = useState<DetailsItem | null>(null);
 
-  const [toast, setToast] = useState(null);
-  const toastTimer = useRef(null);
+  const [toast, setToast] = useState<ToastState>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function fireToast(message, tone = "positive") {
+  function fireToast(message: string, tone = "positive") {
     setToast({ message, tone });
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 3200);
   }
-  useEffect(() => () => clearTimeout(toastTimer.current), []);
+  useEffect(() => () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+  }, []);
 
-  function handleApprove(item, days) {
+  function handleApprove(item: PendingConsent, days: number) {
     setPending((prev) => prev.filter((p) => p.id !== item.id));
     setActive((prev) => [
       {
@@ -705,7 +862,7 @@ export default function ConsentsPage() {
     fireToast(`Approved ${item.org} for ${days} days`, "positive");
   }
 
-  function handleDecline(item) {
+  function handleDecline(item: PendingConsent) {
     setPending((prev) => prev.filter((p) => p.id !== item.id));
     setHistory((prev) => [
       {
@@ -720,7 +877,7 @@ export default function ConsentsPage() {
     fireToast(`Declined ${item.org}`, "negative");
   }
 
-  function handleRevoke(item) {
+  function handleRevoke(item: ActiveConsent) {
     setActive((prev) => prev.filter((a) => a.id !== item.id));
     setHistory((prev) => [
       {
@@ -870,3 +1027,4 @@ export default function ConsentsPage() {
     </div>
   );
 }
+

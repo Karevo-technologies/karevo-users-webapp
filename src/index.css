@@ -125,3 +125,15 @@ body {
   font-family:
     ui-monospace, SFMono-Regular, "JetBrains Mono", "Cascadia Mono", monospace;
 }
+
+/* Dashboard tour: step-card entrance */
+@keyframes tourIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

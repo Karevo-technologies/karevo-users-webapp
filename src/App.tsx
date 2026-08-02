@@ -13,6 +13,7 @@ import LinkedIdsPage from "./dashboard/settings/linked-ids/page";
 import OfflineSharingPage from "./dashboard/settings/offline-sharing/page";
 import SafeguardPage from "./dashboard/security/page";
 import QrScanPage from "./dashboard/scan/page";
+import ProfilePage from "./dashboard/profile/page";
 
 type DashboardTabKey = "home" | "hospitals" | "settings" | "logout";
 
@@ -148,6 +149,17 @@ export default function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <QrScanPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/profile"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ProfilePage />
             </DashboardLayout>
           </ProtectedRoute>
         }
