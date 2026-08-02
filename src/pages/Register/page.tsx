@@ -94,8 +94,8 @@ const RegisterPage = () => {
               className="w-[100rem] h-[10rem] object-contain" 
             />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-            Good to have you here 
+          <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+            Good to have you here
           </h1>
           <p className="text-xl font-medium text-slate-500 dark:text-slate-400 mt-2.5">
             Create your account

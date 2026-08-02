@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Link2, ShieldCheck } from "lucide-react";
 import TopBar from "../../_components/topbar";
 
-const fontDisplay = { fontFamily: "'Fraunces', serif" };
-const fontMono = { fontFamily: "'IBM Plex Mono', monospace" };
+const fontDisplay = {
+  fontFamily: "'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif",
+};
+const fontMono = {
+  fontFamily: "ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace",
+};
 
 const linkedIds = [
   { type: "National ID (NIN)", number: "123-456-789-01", status: "Verified" },
@@ -46,7 +50,7 @@ export default function LinkedIdsPage() {
                 className="flex items-center justify-between py-4"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-primary">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                     <Link2 size={18} strokeWidth={1.75} />
                   </div>
                   <div>
@@ -61,7 +65,7 @@ export default function LinkedIdsPage() {
                     </p>
                   </div>
                 </div>
-                <span className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-[11px] font-medium text-primary">
+                <span className="flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-[11px] font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                   <ShieldCheck size={12} />
                   {item.status}
                 </span>
