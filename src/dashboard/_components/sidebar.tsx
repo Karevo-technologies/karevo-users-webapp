@@ -24,6 +24,18 @@ const navItems = [
   },
 ];
 
+function isPathActive(pathname: string, href: string) {
+  // The dashboard index (no trailing path) maps to Home.
+  if (href === "/dashboard/home") {
+    return (
+      pathname === "/dashboard" ||
+      pathname === "/dashboard/" ||
+      pathname.startsWith("/dashboard/home")
+    );
+  }
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
 export default function Sidebar() {
   const { pathname } = useLocation();
 
@@ -42,9 +54,9 @@ export default function Sidebar() {
           />
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 px-12 py-2">
+        <nav className="flex flex-1 flex-col gap-1 px-12 py-2" data-tour="nav">
           {navItems.map((item) => {
-            const isActive = pathname?.startsWith(item.href);
+            const isActive = isPathActive(pathname ?? "", item.href);
             return (
               <Link
                 key={item.href}
@@ -73,9 +85,10 @@ export default function Sidebar() {
       <nav
         className="fixed inset-x-0 bottom-0 z-40 flex border-t border-cloud bg-paper/95 backdrop-blur lg:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        data-tour="menu"
       >
         {navItems.map((item) => {
-          const isActive = pathname?.startsWith(item.href);
+          const isActive = isPathActive(pathname ?? "", item.href);
           return (
             <Link
               key={item.href}
@@ -99,3 +112,4 @@ export default function Sidebar() {
     </>
   );
 }
+
