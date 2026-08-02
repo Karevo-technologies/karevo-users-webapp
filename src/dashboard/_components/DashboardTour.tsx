@@ -11,6 +11,7 @@ import {
 import { createPortal } from "react-dom";
 import { Button } from "../../components/ui/button";
 import { cn } from "../../lib/utils";
+import { useAuth } from "../../context/AuthContext";
 
 /**
  * First-visit walkthrough of the dashboard chrome. Steps spotlight elements
@@ -110,6 +111,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   // null while no tour is running.
   const [steps, setSteps] = useState<TourStep[] | null>(null);
   const [index, setIndex] = useState(0);
+  const { isAuthenticated } = useAuth();
 
   const start = useCallback(() => {
     setIndex(0);
@@ -125,8 +127,11 @@ export function TourProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // First visit only: give the dashboard a beat to settle, then run.
+  // First visit only: give the dashboard a beat to settle, then run. Gated on
+  // auth so the tour never shows over the login/register screens — it starts
+  // after the user has logged in or signed up and lands on the dashboard.
   useEffect(() => {
+    if (!isAuthenticated) return;
     try {
       if (localStorage.getItem(TOUR_DONE_KEY)) return;
     } catch {
@@ -134,7 +139,16 @@ export function TourProvider({ children }: { children: ReactNode }) {
     }
     const t = setTimeout(start, 900);
     return () => clearTimeout(t);
-  }, [start]);
+  }, [isAuthenticated, start]);
+
+  // Safety net: if the user signs out mid-tour (or the auth state drops for
+  // any reason), dismiss the overlay instead of leaving it over the login page.
+  useEffect(() => {
+    if (!isAuthenticated && steps) {
+      setSteps(null);
+      setIndex(0);
+    }
+  }, [isAuthenticated, steps]);
 
   return (
     <TourContext.Provider value={{ start }}>
@@ -276,9 +290,7 @@ function TourOverlay({
           ref={cardRef}
           className={cn(
             "pointer-events-auto w-80 max-w-[calc(100vw-2rem)] rounded-3xl border border-cloud bg-white p-5 shadow-2xl dark:bg-[#141927]",
-            centered
-              ? "animate-[tourIn_0.25s_ease-out]"
-              : "absolute",
+            centered ? "animate-[tourIn_0.25s_ease-out]" : "absolute",
           )}
           style={
             centered
@@ -364,4 +376,3 @@ function TourOverlay({
     document.body,
   );
 }
-
