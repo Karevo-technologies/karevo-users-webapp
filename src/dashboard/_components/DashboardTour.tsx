@@ -169,6 +169,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
 const SPOT_PAD = 6; // breathing room around the spotlit element
 const CARD_GAP = 14; // gap between spotlight and card
+const SIDEBAR_WIDTH = 240; // desktop rail (lg:w-60)
 
 type Box = { top: number; left: number; width: number; height: number };
 
@@ -239,7 +240,12 @@ function TourOverlay({
         : box.top - SPOT_PAD - CARD_GAP - ch;
     top = Math.max(16, top);
     let left = box.left + box.width / 2 - cw / 2;
-    left = Math.max(16, Math.min(left, window.innerWidth - cw - 16));
+    // On desktop (lg+) the fixed sidebar occupies the left 240px; keep
+    // spotlight cards to the right of it so the sidebar stays visible.
+    const minLeft = window.matchMedia("(min-width: 1024px)").matches
+      ? SIDEBAR_WIDTH + CARD_GAP
+      : 16;
+    left = Math.max(minLeft, Math.min(left, window.innerWidth - cw - 16));
     setCardPos({ top, left });
   }, [box, index]);
 

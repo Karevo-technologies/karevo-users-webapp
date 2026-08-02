@@ -49,14 +49,21 @@ export function AlertDialogContent({
   if (!shouldShow) return null;
 
   return (
-    <div
-      className={cn(
-        "fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-2xl border bg-paper p-6 shadow-lg",
-        className,
-      )}
-      {...props}
-    >
-      {children}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Glassmorphism backdrop */}
+      <div
+        className="absolute inset-0 bg-slate-950/40 backdrop-blur-md dark:bg-slate-950/60"
+        aria-hidden="true"
+      />
+      <div
+        className={cn(
+          "relative max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-white/20 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-[#141927]/90",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
     </div>
   );
 }
