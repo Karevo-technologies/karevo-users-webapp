@@ -34,14 +34,17 @@ export function Switch({
         onCheckedChange?.(next);
       }}
       className={
-        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border border-border bg-paper/40 transition " +
-        (disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-paper/60")
+        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border transition-colors duration-200 " +
+        (isChecked
+          ? "border-blue-600 bg-blue-600"
+          : "border-border bg-paper/40") +
+        (disabled ? " opacity-50 cursor-not-allowed" : " hover:bg-paper/60")
       }
     >
       <span
         className={
-          "inline-block h-5 w-5 transform rounded-full bg-ink transition-transform duration-200 " +
-          (isChecked ? "translate-x-5" : "translate-x-1")
+          "inline-block h-5 w-5 transform rounded-full shadow-sm transition-transform duration-200 " +
+          (isChecked ? "translate-x-5 bg-white" : "translate-x-1 bg-ink")
         }
       />
     </button>

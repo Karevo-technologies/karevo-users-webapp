@@ -135,7 +135,7 @@ export default function SafeguardPage() {
         <section className="mb-16 flex flex-col-reverse items-start gap-10 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-xl">
             <h1
-              className="kv-display font-serif text-[32px] font-normal leading-[1.15] tracking-tight sm:text-[38px]"
+              className="kv-display text-[32px] font-normal leading-[1.15] tracking-tight sm:text-[38px]"
               style={{ color: "var(--kv-ink)" }}
             >
               Safeguard your digital identity
@@ -204,7 +204,7 @@ export default function SafeguardPage() {
                   strokeWidth={1.5}
                 />
                 <span
-                  className="kv-display mt-1 font-serif text-2xl leading-none"
+                  className="kv-display mt-1 text-2xl leading-none"
                   style={{ color: "var(--kv-ink)" }}
                 >
                   {PROTECTION_SCORE}

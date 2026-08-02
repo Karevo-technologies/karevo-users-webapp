@@ -51,9 +51,12 @@ import {
 /* ---------------------------------------------------------------------- */
 /* Fonts                                                                   */
 /* ---------------------------------------------------------------------- */
-const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');`;
-const fontDisplay = { fontFamily: "'Fraunces', serif" };
-const fontMono = { fontFamily: "'IBM Plex Mono', monospace" };
+const fontDisplay = {
+  fontFamily: "'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif",
+};
+const fontMono = {
+  fontFamily: "ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace",
+};
 
 const AUTO_SIGN_OUT_OPTIONS = [5, 15, 30];
 
@@ -87,8 +90,8 @@ const initialDevices = [
 
 function RowIcon({ icon: Icon, tone }: { icon: any; tone: string }) {
   const tones: Record<string, string> = {
-    primary: "bg-muted text-primary",
-    destructive: "bg-destructive/10 text-destructive",
+    primary: "bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
+    destructive: "bg-muted text-muted-foreground",
     stone: "bg-muted text-muted-foreground",
   };
   return (
@@ -105,15 +108,15 @@ function Toast({ toast }: { toast: { message: string; tone: string } | null }) {
   const isPositive = toast.tone !== "negative";
   return (
     <div
-      className="fixed inset-x-0 bottom-5 z-50 flex justify-center px-4"
+      className="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
       role="status"
       aria-live="polite"
     >
-      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-background px-4 py-3 text-foreground shadow-lg animate-in fade-in slide-in-from-bottom-2">
+      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-white px-4 py-3 text-foreground shadow-lg animate-in fade-in slide-in-from-top-2 dark:bg-stone-900">
         {isPositive ? (
-          <CheckCircle2 size={16} className="shrink-0 text-teal-400" />
+          <CheckCircle2 size={16} className="shrink-0 text-blue-600" />
         ) : (
-          <XCircle size={16} className="shrink-0 text-rose-400" />
+          <XCircle size={16} className="shrink-0 text-blue-600" />
         )}
         <span className="text-[13px]">{toast.message}</span>
       </div>
@@ -170,7 +173,7 @@ function SettingsRow({
 
       <div className="min-w-0 flex-1 pt-0.5">
         <p
-          className={`text-[14px] font-medium ${isDestructive ? "text-destructive" : "text-foreground"}`}
+          className={`text-[14px] font-medium ${isDestructive ? "text-foreground" : "text-foreground"}`}
         >
           {row.title}
         </p>
@@ -195,7 +198,7 @@ function SettingsRow({
             size={16}
             strokeWidth={2}
             className={
-              isDestructive ? "text-destructive/50" : "text-muted-foreground"
+              isDestructive ? "text-muted-foreground" : "text-muted-foreground"
             }
           />
         )}
@@ -343,7 +346,7 @@ function PinModal({
           </Button>
           <Button
             onClick={handleSubmit}
-            className="bg-teal-700 hover:bg-teal-800"
+            className="bg-blue-600 hover:bg-blue-700"
           >
             Save new pin
           </Button>
@@ -475,7 +478,7 @@ function RemoveDeviceDialog({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => onConfirm(device)}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-muted text-foreground hover:bg-muted/70"
           >
             Remove device
           </AlertDialogAction>
@@ -509,7 +512,7 @@ function NinLockOffDialog({
           <AlertDialogCancel>Keep it locked</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-muted text-foreground hover:bg-muted/70"
           >
             Turn off
           </AlertDialogAction>
@@ -568,7 +571,7 @@ function ResetDeviceDialog({
           <AlertDialogAction
             disabled={!canConfirm}
             onClick={onConfirm}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-40"
+            className="bg-muted text-foreground hover:bg-muted/70 disabled:opacity-40"
           >
             Delete all data on this device
           </AlertDialogAction>
@@ -915,8 +918,6 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <style>{FONT_IMPORT}</style>
-
       <TopBar
         title="Settings"
         subtitle="Manage your account, security, and preferences"

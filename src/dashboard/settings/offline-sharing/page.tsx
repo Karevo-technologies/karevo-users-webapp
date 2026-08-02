@@ -6,7 +6,9 @@ import { ArrowLeft, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import TopBar from "../../_components/topbar";
 
-const fontDisplay = { fontFamily: "'Fraunces', serif" };
+const fontDisplay = {
+  fontFamily: "'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif",
+};
 
 export default function OfflineSharingPage() {
   const navigate = useNavigate();
@@ -103,12 +105,16 @@ export default function OfflineSharingPage() {
       </main>
 
       {toast && (
-        <div className="fixed inset-x-0 bottom-5 z-50 flex justify-center px-4">
-          <div className="flex items-center gap-2.5 rounded-xl border border-border bg-background px-4 py-3 text-foreground shadow-lg">
+        <div
+          className="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-2.5 rounded-xl border border-border bg-white px-4 py-3 text-foreground shadow-lg animate-in fade-in slide-in-from-top-2 dark:bg-stone-900">
             {toast.tone !== "negative" ? (
-              <CheckCircle2 size={16} className="shrink-0 text-teal-400" />
+              <CheckCircle2 size={16} className="shrink-0 text-blue-600" />
             ) : (
-              <XCircle size={16} className="shrink-0 text-rose-400" />
+              <XCircle size={16} className="shrink-0 text-blue-600" />
             )}
             <span className="text-[13px]">{toast.message}</span>
           </div>

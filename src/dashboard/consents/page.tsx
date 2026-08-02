@@ -43,17 +43,18 @@ import {
 /* ---------------------------------------------------------------------- */
 /* Fonts + palette                                                        */
 /* ---------------------------------------------------------------------- */
-/* Display: Fraunces (used sparingly, for org names + modal titles)       */
+/* Display: Space Grotesk (used for org names + modal titles)             */
 /* Body: Inter                                                            */
-/* Utility/ledger: IBM Plex Mono (timestamps, durations, scope tags)      */
-/* Palette: deep clinical teal as primary, amber for pending, rose for    */
-/* revoke/decline, warm stone neutrals. Avoids the generic cream+terracotta*/
-/* and near-black+neon defaults.                                          */
+/* Utility/ledger: ui-monospace (timestamps, durations, scope tags)       */
+/* Palette: blue as primary, soft blue/gray for pending, neutral gray for */
+/* decline/revoke — matching the home page blue + white principle.        */
 
-const FONT_IMPORT = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');`;
-
-const fontDisplay = { fontFamily: "'Fraunces', serif" };
-const fontMono = { fontFamily: "'IBM Plex Mono', monospace" };
+const fontDisplay = {
+  fontFamily: "'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif",
+};
+const fontMono = {
+  fontFamily: "ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace",
+};
 
 /* ---------------------------------------------------------------------- */
 /* Data                                                                    */
@@ -141,9 +142,7 @@ function OrgIcon({ kind, tone = "primary" }) {
   const Icon = ORG_ICON[kind] || Building2;
   const tones = {
     primary:
-      "bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300 ring-teal-100 dark:ring-teal-900",
-    amber:
-      "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 ring-amber-100 dark:ring-amber-900",
+      "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 ring-blue-100 dark:ring-blue-900",
     muted: "bg-muted text-muted-foreground ring-border",
   };
   return (
@@ -181,7 +180,7 @@ function CountdownRing({ daysLeft, totalDays, size = 44 }) {
   const c = 2 * Math.PI * r;
   const critical = daysLeft <= Math.max(3, totalDays * 0.15);
   const warning = !critical && daysLeft <= totalDays * 0.3;
-  const color = critical ? "#e11d48" : warning ? "#d97706" : "#0f766e";
+  const color = critical ? "#1d4ed8" : warning ? "#2563eb" : "#3452d9";
 
   return (
     <div
@@ -224,9 +223,8 @@ function CountdownRing({ daysLeft, totalDays, size = 44 }) {
 
 function StatCard({ icon: Icon, count, label, tone }) {
   const tones = {
-    amber: "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300",
-    teal: "bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300",
-    stone: "bg-muted text-muted-foreground",
+    primary: "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300",
+    muted: "bg-muted text-muted-foreground",
   };
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
@@ -292,15 +290,15 @@ function Toast({ toast }) {
   const isPositive = toast.tone === "positive";
   return (
     <div
-      className="fixed inset-x-0 bottom-5 z-50 flex justify-center px-4"
+      className="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
       role="status"
       aria-live="polite"
     >
-      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-stone-900 px-4 py-3 text-white shadow-lg animate-in fade-in slide-in-from-bottom-2 dark:bg-stone-800">
+      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-white px-4 py-3 text-foreground shadow-lg animate-in fade-in slide-in-from-top-2 dark:bg-stone-900">
         {isPositive ? (
-          <CheckCircle2 size={16} className="shrink-0 text-teal-400" />
+          <CheckCircle2 size={16} className="shrink-0 text-blue-600" />
         ) : (
-          <XCircle size={16} className="shrink-0 text-rose-400" />
+          <XCircle size={16} className="shrink-0 text-blue-600" />
         )}
         <span className="text-[13px]">{toast.message}</span>
       </div>
@@ -311,13 +309,13 @@ function Toast({ toast }) {
 function PendingRow({ item, isLast, onOpenApprove, onOpenDecline }) {
   return (
     <TimelineRow isLast={isLast}>
-      <OrgIcon kind={item.kind} tone="amber" />
+      <OrgIcon kind={item.kind} tone="primary" />
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <p className="truncate text-[14px] font-medium text-foreground">
             {item.org}
           </p>
-          <Badge className="shrink-0 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300">
+          <Badge className="shrink-0 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
             Pending
           </Badge>
         </div>
@@ -332,7 +330,7 @@ function PendingRow({ item, isLast, onOpenApprove, onOpenDecline }) {
           <Button
             size="sm"
             onClick={() => onOpenApprove(item)}
-            className="gap-1.5 bg-teal-700 hover:bg-teal-800"
+            className="gap-1.5 bg-blue-600 hover:bg-blue-700"
           >
             <Check size={14} strokeWidth={2.25} />
             Review &amp; approve
@@ -341,7 +339,7 @@ function PendingRow({ item, isLast, onOpenApprove, onOpenDecline }) {
             size="sm"
             variant="outline"
             onClick={() => onOpenDecline(item)}
-            className="gap-1.5 border-border text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-700 dark:hover:text-rose-300"
+            className="gap-1.5 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             <X size={14} strokeWidth={2.25} />
             Decline
@@ -387,7 +385,7 @@ function ActiveRow({ item, isLast, onOpenDetails, onOpenRevoke }) {
             size="sm"
             variant="outline"
             onClick={() => onOpenRevoke(item)}
-            className="gap-1.5 border-border text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-700 dark:hover:text-rose-300"
+            className="gap-1.5 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             <ShieldOff size={14} strokeWidth={2} />
             Revoke access
@@ -401,7 +399,7 @@ function ActiveRow({ item, isLast, onOpenDetails, onOpenRevoke }) {
 const HISTORY_BADGE = {
   expired: "border-border bg-muted text-muted-foreground",
   revoked:
-    "border-rose-200 dark:border-rose-800 bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400",
+    "border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
   declined: "border-border bg-muted text-muted-foreground",
 };
 const HISTORY_LABEL = {
@@ -429,7 +427,10 @@ function HistoryRow({ item, isLast, onOpenDetails }) {
             {HISTORY_LABEL[item.status]}
           </Badge>
         </div>
-        <p style={fontMono} className="mt-0.5 text-[11px] text-muted-foreground">
+        <p
+          style={fontMono}
+          className="mt-0.5 text-[11px] text-muted-foreground"
+        >
           {HISTORY_LABEL[item.status]} {item.resolvedAt}
         </p>
         <ScopeChips scope={item.scope} />
@@ -452,7 +453,7 @@ function ApproveModal({ item, open, onOpenChange, onConfirm }) {
       <DialogContent className="sm:max-w-[420px]">
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <OrgIcon kind={item.kind} tone="amber" />
+            <OrgIcon kind={item.kind} tone="primary" />
             <DialogTitle style={fontDisplay} className="text-[18px]">
               {item.org}
             </DialogTitle>
@@ -483,7 +484,7 @@ function ApproveModal({ item, open, onOpenChange, onConfirm }) {
                   style={fontMono}
                   className={`flex-1 rounded-lg border py-2 text-[13px] font-medium transition-colors ${
                     days === d
-                      ? "border-teal-700 bg-teal-700 text-white"
+                      ? "border-blue-600 bg-blue-600 text-white"
                       : "border-border text-muted-foreground hover:border-muted-foreground"
                   }`}
                 >
@@ -492,7 +493,7 @@ function ApproveModal({ item, open, onOpenChange, onConfirm }) {
               ))}
             </div>
             {days !== item.requestedDays && (
-              <p className="mt-2 text-[11px] text-amber-700 dark:text-amber-400">
+              <p className="mt-2 text-[11px] text-muted-foreground">
                 They asked for {item.requestedDays} days — you're granting{" "}
                 {days}.
               </p>
@@ -515,7 +516,7 @@ function ApproveModal({ item, open, onOpenChange, onConfirm }) {
           </Button>
           <Button
             onClick={() => onConfirm(item, days)}
-            className="gap-1.5 bg-teal-700 hover:bg-teal-800"
+            className="gap-1.5 bg-blue-600 hover:bg-blue-700"
           >
             <Check size={14} strokeWidth={2.25} />
             Grant {days}-day access
@@ -542,7 +543,7 @@ function DeclineDialog({ item, open, onOpenChange, onConfirm }) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => onConfirm(item)}
-            className="bg-rose-600 text-white hover:bg-rose-700"
+            className="bg-muted text-foreground hover:bg-muted/70"
           >
             Decline request
           </AlertDialogAction>
@@ -569,7 +570,7 @@ function RevokeDialog({ item, open, onOpenChange, onConfirm }) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => onConfirm(item)}
-            className="bg-rose-600 text-white hover:bg-rose-700"
+            className="bg-muted text-foreground hover:bg-muted/70"
           >
             Revoke access
           </AlertDialogAction>
@@ -619,7 +620,10 @@ function DetailsModal({ item, open, onOpenChange, onOpenRevoke }) {
                 <p className="text-[12px] font-medium text-muted-foreground">
                   Time remaining
                 </p>
-                <p style={fontMono} className="text-[11px] text-muted-foreground">
+                <p
+                  style={fontMono}
+                  className="text-[11px] text-muted-foreground"
+                >
                   Granted {item.grantedAt} · {item.totalDays}-day term
                 </p>
               </div>
@@ -653,7 +657,7 @@ function DetailsModal({ item, open, onOpenChange, onOpenRevoke }) {
                 onOpenRevoke(item);
               }}
               variant="outline"
-              className="gap-1.5 border-border text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950 hover:text-rose-700 dark:text-rose-400"
+              className="gap-1.5 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               <ShieldOff size={14} />
               Revoke access
@@ -733,8 +737,6 @@ export default function ConsentsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <style>{FONT_IMPORT}</style>
-
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-5">
           <button
@@ -763,19 +765,19 @@ export default function ConsentsPage() {
             icon={Hourglass}
             count={pending.length}
             label="Pending"
-            tone="amber"
+            tone="primary"
           />
           <StatCard
             icon={ShieldCheck}
             count={active.length}
             label="Active"
-            tone="teal"
+            tone="primary"
           />
           <StatCard
             icon={HistoryIcon}
             count={history.length}
             label="Past"
-            tone="stone"
+            tone="muted"
           />
         </div>
 
