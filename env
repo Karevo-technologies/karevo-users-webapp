@@ -1,0 +1,16 @@
+
+APP_NAME=K-ID by Karevo
+APP_ENV=production
+APP_URL=https://api.karevo.com
+
+DB_HOST=localhost
+DB_NAME=karevo_kid
+DB_USER=root
+DB_PASS=
+DB_PORT=3306
+
+JWT_SECRET=b1a2c3k4e5n6d_f1o2r_k1r2a3v4e5o_u1s2e3r4s_w1e2b3a4p5p_a1u2t3h
+JWT_ISSUER=karevo-k-id
+JWT_EXPIRY=86400
+
+OTP_EXPIRY_MINUTES=5
