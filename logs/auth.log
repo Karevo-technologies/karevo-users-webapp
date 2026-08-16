@@ -1,0 +1,9 @@
+[2026-08-16 18:40:52] ORGANISATION - LOGIN_FAILED - guest - IP:127.0.0.1 - {"email":"admin@luth.karevo.demo"}
+[2026-08-16 18:43:46] ORGANISATION - LOGIN_FAILED - guest - IP:127.0.0.1 - {"email":"admin@luth.karevo.demo"}
+[2026-08-16 18:45:51] ORGANISATION - LOGIN_FAILED - guest - IP:127.0.0.1 - {"email":"admin@luth.karevo.demo"}
+[2026-08-16 18:46:45] ORGANISATION - LOGIN_FAILED - guest - IP:127.0.0.1 - {"email":"admin@luth.karevo.demo"}
+[2026-08-16 18:47:48] ORGANISATION - LOGIN_FAILED - guest - IP:127.0.0.1 - {"email":"admin@luth.karevo.demo"}
+[2026-08-16 18:48:12] ORGANISATION - LOGIN_FAILED - guest - IP:127.0.0.1 - {"email":"admin@luth.karevo.demo"}
+[2026-08-16 18:49:45] ORGANISATION - LOGIN_FAILED - guest - IP:127.0.0.1 - {"email":"admin@luth.karevo.demo"}
+[2026-08-16 18:51:31] ORGANISATION - LOGIN_SUCCESS - 87a26434-9981-11f1-a4c2-88787334e71a - IP:127.0.0.1 - []
+[2026-08-16 18:52:01] ORGANISATION - LOGIN_SUCCESS - 87a26434-9981-11f1-a4c2-88787334e71a - IP:127.0.0.1 - []
