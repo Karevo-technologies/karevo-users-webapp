@@ -12,7 +12,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 # Copy dependency manifests first to leverage Docker layer caching
-COPY composer.json composer.lock ./
+# COPY composer.json composer.lock ./
 
 # Install production dependencies and optimize the autoloader
 RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
@@ -26,7 +26,7 @@ FROM php:8.2-apache
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Enable Apache mod_rewrite to support your .htaccess routing rules
-RUN a2enmod rewrite
+# RUN a2enmod rewrite
 
 # Configure Apache to document root matching your file structure
 # Since you have an index.php / index.html at the root, we serve /var/www/html directly.
