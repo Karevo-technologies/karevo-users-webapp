@@ -15,7 +15,7 @@ WORKDIR /app
 # COPY composer.json composer.lock ./
 
 # Install production dependencies and optimize the autoloader
-RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
+RUN composer install
 
 # =========================================================================
 # 2. RUNTIME STAGE: Production Apache & PHP Environment
