@@ -1,5 +1,0 @@
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
-Header always set Content-Type "application/json" "expr=%{REQUEST_URI} =~ m#^/api/#"
