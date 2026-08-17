@@ -50,7 +50,7 @@ COPY config/ ./config/
 COPY logs/ ./logs/
 COPY routes/ ./routes/
 COPY src/ ./src/
-COPY .env .htaccess index.html index.php README.md ./
+COPY .env .htaccess index.php README.md ./
 
 # Set proper ownership and permissions for the Apache runtime user (www-data)
 RUN chown -R www-data:www-data /var/www/html \
