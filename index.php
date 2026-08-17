@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Error handling
-echo $_ENV['APP_URL'];
+print_r ($_ENV);
 set_exception_handler(function($e){
     http_response_code(500);
     echo json_encode([
