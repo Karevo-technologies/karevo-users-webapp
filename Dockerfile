@@ -10,7 +10,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
-COPY . .  # copy the rest so vendor has the right path context
+COPY . .
 
 # =========================================================================
 # 2. RUNTIME STAGE: Production Apache & PHP Environment
@@ -47,7 +47,7 @@ COPY logs/ ./logs/
 COPY routes/ ./routes/
 COPY src/ ./src/
 COPY index.php README.md ./
-COPY .htaccess ./  # make sure this is copied
+COPY .htaccess ./
 
 # 8. Permissions
 RUN chown -R www-data:www-data /var/www/html \
