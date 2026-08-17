@@ -21,7 +21,7 @@ FROM php:8.2-apache
 RUN docker-php-ext-install pdo pdo_mysql
 
 # 2. Enable Apache modules: rewrite + headers + expr. expr is required for "expr=" in Header
-RUN a2enmod rewrite headers expr
+RUN a2enmod rewrite headers
 
 # 3. Allow .htaccess to override everything. Your current sed only hits sites-available
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
