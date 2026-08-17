@@ -25,7 +25,7 @@ class Database {
         $pass = $_ENV['DB_PASS'] ?? '';
         $port = $_ENV['DB_PORT'] ?? '3306';
 
-        $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";echo $dns;
+        $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";echo $dsn;
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
