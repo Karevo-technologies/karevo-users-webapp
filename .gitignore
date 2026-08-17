@@ -1,0 +1,10 @@
+# Initialize a local Git repository
+git init
+
+# Create your .gitignore file to block secrets and logs from Git
+cat <<EOT >> .gitignore
+.env
+vendor/
+logs/*.log
+.DS_Store
+EOT

@@ -22,9 +22,6 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 # =========================================================================
 FROM php:8.2-apache
 
-# Enable Apache header module
-RUN a2enmod headers
-
 # Install core PHP extensions required by modern web apps (e.g., pdo_mysql for database.sql)
 RUN docker-php-ext-install pdo pdo_mysql
 

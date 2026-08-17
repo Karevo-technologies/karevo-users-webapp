@@ -1,0 +1,33 @@
+# Git tracking
+.git
+.gitignore
+
+# Environment configurations containing secrets
+.env
+.env.*
+!.env.example
+
+# Local package manager directories (installed during build stage instead)
+vendor/
+node_modules/
+
+# Application runtime files and logs
+logs/*.log
+*.cache
+.phpunit.cache/
+
+# Local development and orchestration setups
+docker-compose.yml
+docker-compose.*.yml
+.docker/
+
+# Platform specific metadata and OS junk files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp

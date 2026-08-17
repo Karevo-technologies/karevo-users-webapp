@@ -15,6 +15,11 @@
  */
 require __DIR__ . '/vendor/autoload.php';
 
+// Check if the current request URI starts with /api
+if (strpos($_SERVER['REQUEST_URI'], '/api') === 0 || strpos($_SERVER['REQUEST_URI'], '/api/') === 0) {
+    header('Content-Type: application/json; charset=utf-8');
+}
+
 // Load ENV
 if (file_exists(__DIR__ . '/.env')) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
