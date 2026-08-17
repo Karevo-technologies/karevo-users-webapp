@@ -7,36 +7,33 @@ FROM php:8.2-cli-alpine AS builder
 RUN apk add --no-cache git unzip zip
 
 # Install official Composer binary from the trusted image
-# COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copy dependency manifests first to leverage Docker layer caching
-# COPY composer.json composer.lock ./
+# UNCOMMENTED: Copy dependency manifests first to leverage Docker layer caching
+COPY composer.json composer.lock* ./
 
 # Install production dependencies and optimize the autoloader
-RUN composer install
+RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 
 # =========================================================================
 # 2. RUNTIME STAGE: Production Apache & PHP Environment
 # =========================================================================
 FROM php:8.2-apache
 
-# Install core PHP extensions required by modern web apps (e.g., pdo_mysql for database.sql)
+# Install core PHP extensions required by modern web apps (e.g., pdo_mysql)
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Enable Apache mod_rewrite to support your .htaccess routing rules
-# RUN a2enmod rewrite
+RUN a2enmod rewrite
 
 # Configure Apache to document root matching your file structure
-# Since you have an index.php / index.html at the root, we serve /var/www/html directly.
 ENV APACHE_DOCUMENT_ROOT /var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Configure custom ports for Render compatibility
-# Render dynamically routes traffic. While Render can auto-detect any port, 
-# exposing and binding explicitly to 80 or 8080 ensures standard compliance.
 ENV PORT=80
 RUN sed -i "s/Listen 80/Listen \${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/*.conf
 
