@@ -67,6 +67,17 @@ export default function App() {
       />
 
       <Route
+        path="/org/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <UsersPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
         path="/dashboard/home"
         element={
           <ProtectedRoute>
