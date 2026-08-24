@@ -71,6 +71,8 @@ const LoginPage = () => {
   return (
     <main className="min-h-screen bg-[#f4f1eb] text-slate-900 antialiased">
       <div className="grid min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      
+        {/* left section where the welcome is */}
         <aside className="relative hidden overflow-hidden bg-[#00594f] px-10 py-12 text-white lg:flex lg:flex-col xl:px-16">
           <div
             className="pointer-events-none absolute inset-0 opacity-20"
@@ -81,16 +83,17 @@ const LoginPage = () => {
             }}
           />
           <div className="pointer-events-none absolute -bottom-28 -left-16 h-64 w-64 rounded-full border border-white/20" />
-
+            {/* for the abstract circle at the bottob left conrn */}
           <div className="relative flex items-center">
             <img
               src={logo}
               alt="K-ID"
-              className="h-10 w-auto max-w-[150px] object-contain brightness-0 invert"
+              className="h-50 w-auto max-w-[150px] object-contain brightness-0 invert"
             />
+            {/* the invert might not be needed incase of white image provided */}
           </div>
 
-          <div className="relative my-auto max-w-xl pt-20">
+          <div className="relative max-w-xl">
             <h1 className="kv-display max-w-md text-4xl font-bold leading-[1.12] tracking-tight xl:text-5xl">
               Secure organisation access, made simple.
             </h1>
@@ -106,13 +109,31 @@ const LoginPage = () => {
               ))}
             </ul>
           </div>
+          {/* the above has same code but different paprent style for padding nad margining, comment pout for reuse if needed later */}
+          {/* <div className="relative my-auto max-w-xl pt-20">
+            <h1 className="kv-display max-w-md text-4xl font-bold leading-[1.12] tracking-tight xl:text-5xl">
+              Secure organisation access, made simple.
+            </h1>
 
-          <p className="relative flex items-center gap-2 text-sm text-white/75">
+            <ul className="mt-10 space-y-5" aria-label="K-ID organisation benefits">
+              {organisationBenefits.map((benefit) => (
+                <li key={benefit} className="flex items-center gap-3 text-base font-medium text-white/90">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/15">
+                    <Check size={15} strokeWidth={2.5} aria-hidden="true" />
+                  </span>
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </div> */}
+
+          <p className="relative flex items-center gap-2 text-sm text-white/75 pt-4">
             <ShieldCheck size={17} aria-hidden="true" />
             Organisation access is for verified entities only.
           </p>
         </aside>
 
+        {/* Right section where the form is */}
         <section className="flex min-h-screen items-center justify-center px-6 py-12 sm:px-10 lg:px-16">
           <div className="w-full max-w-[385px]">
             <div className="mb-10 lg:hidden">
@@ -120,9 +141,9 @@ const LoginPage = () => {
             </div>
 
             <header className="mb-9">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-[#00594f]">
+              {/* <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-[#00594f]">
                 K-ID Organisation Portal
-              </p>
+              </p> */}
               <h1 className="kv-display text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                 Sign in to your organisation account
               </h1>
@@ -193,7 +214,7 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsPasswordVisible((visible) => !visible)}
-                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-[#d5e4e0] hover:text-[#00594f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00594f]/30"
+                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-[##00594f] hover:text-[#00594f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00594f]/30"
                     aria-label={isPasswordVisible ? "Hide password" : "Show password"}
                     disabled={isLoading}
                   >
