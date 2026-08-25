@@ -4,6 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   FileValidationIcon,
   Home01Icon,
+  MedicalFileIcon,
   Setting07Icon,
 } from "@hugeicons/core-free-icons";
 import logo from "../../assets/logo.png";
@@ -12,6 +13,11 @@ import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
   { label: "Home", href: "/dashboard/home", icon: Home01Icon },
+  {
+    label: "Records",
+    href: "/dashboard/records",
+    icon: MedicalFileIcon,
+  },
   {
     label: "Consents",
     href: "/dashboard/consents",

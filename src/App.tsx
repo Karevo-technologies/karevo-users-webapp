@@ -7,6 +7,7 @@ import RegisterPage from "./pages/Register/page";
 import DashboardLayout from "./dashboard/layout";
 import UsersPage from "./dashboard/home/page";
 import HospitalsLabHistoryPage from "./dashboard/consents/page";
+import PatientRecordsPage from "./dashboard/records/page";
 import SettingsPage from "./dashboard/settings/page";
 import NotificationsPage from "./dashboard/settings/notifications/page";
 import LinkedIdsPage from "./dashboard/settings/linked-ids/page";
@@ -83,6 +84,17 @@ export default function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <HospitalsLabHistoryPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/records"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <PatientRecordsPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
