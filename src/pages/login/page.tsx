@@ -136,8 +136,8 @@ const LoginPage = () => {
         {/* Right section where the form is */}
         <section className="flex min-h-screen items-center justify-center px-6 py-12 sm:px-10 lg:px-16">
           <div className="w-full max-w-[385px]">
-            <div className="mb-10 lg:hidden">
-              <img src={logo} alt="K-ID" className="h-9 w-auto max-w-[132px] object-contain" />
+            <div className="mb-2 lg:hidden">
+              <img src={logo} alt="K-ID" className="h-20 w-auto max-w-[132px] object-contain" />
             </div>
 
             <header className="mb-9">
@@ -181,7 +181,8 @@ const LoginPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
                     aria-invalid={Boolean(error)}
-                    className="h-[52px] rounded-2xl border-transparent bg-[#e5eeec] py-3 pl-12 pr-4 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:border-[#00594f] focus-visible:bg-white focus-visible:ring-[#00594f]/20"
+                    // className="h-[52px] w-full rounded-full border border-[#e6f2ec] bg-white pl-11 pr-4 text-[15px] text-[#1b2520] outline-none transition-colors duration-300 placeholder:text-[#a8b0ab] focus:border-[#00594f]"
+                    className="h-[52px] rounded-full  border-transparent bg-[#e5eeec] py-3 pl-12 pr-4 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:border-[#00594f] focus-visible:bg-white focus-visible:ring-[#00594f]/20"
                   />
                 </div>
               </div>
@@ -214,7 +215,7 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsPasswordVisible((visible) => !visible)}
-                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-[##00594f] hover:text-[#00594f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00594f]/30"
+                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-[#00594f] hover:text-[#00594f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00594f]/30"
                     aria-label={isPasswordVisible ? "Hide password" : "Show password"}
                     disabled={isLoading}
                   >
@@ -233,7 +234,7 @@ const LoginPage = () => {
               </Button>
             </form>
 
-            <p className="mt-9 text-center text-sm text-slate-600">
+            <p className="mt-9 text-center text-sm text-[#00594f]">
               New to K-ID?{" "}
               <Link to="/register" className="font-semibold text-[#00594f] hover:underline">
                 Create an account
