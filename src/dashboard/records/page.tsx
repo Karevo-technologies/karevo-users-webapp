@@ -1,18 +1,16 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import {
-  ArrowLeft,
-  Droplet,
-  Syringe,
-  Pill,
-  FileText,
-  Eye,
-  CalendarClock,
-  Lock,
-  type LucideIcon,
-} from "lucide-react";
+  ArrowLeft01Icon,
+  DropletIcon,
+  VaccineIcon,
+  PillIcon,
+  File01Icon,
+  EyeIcon,
+  CalendarClockIcon,
+  LockIcon,
+} from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,14 +40,14 @@ const fontMono = {
 /* Record type → icon                                                     */
 /* ---------------------------------------------------------------------- */
 
-const TYPE_ICON: Record<string, LucideIcon> = {
-  "Blood Test Result": Droplet,
-  "Vaccination History": Syringe,
-  Prescription: Pill,
+const TYPE_ICON: Record<string, IconSvgElement> = {
+  "Blood Test Result": DropletIcon,
+  "Vaccination History": VaccineIcon,
+  Prescription: PillIcon,
 };
 
-function iconForType(type: string): LucideIcon {
-  return TYPE_ICON[type] || FileText;
+function iconForType(type: string): IconSvgElement {
+  return TYPE_ICON[type] || File01Icon;
 }
 
 function formatDate(iso: string) {
@@ -67,10 +65,10 @@ function formatDate(iso: string) {
 /* ---------------------------------------------------------------------- */
 
 function RecordIcon({ type }: { type: string }) {
-  const Icon = iconForType(type);
+  const icon = iconForType(type);
   return (
     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 ring-1 ring-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:ring-blue-900">
-      <Icon size={18} strokeWidth={1.75} />
+      <HugeiconsIcon icon={icon} size={18} strokeWidth={1.75} />
     </div>
   );
 }
@@ -79,9 +77,9 @@ function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card py-16 text-center">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-        <FileText size={20} strokeWidth={1.5} />
+        <HugeiconsIcon icon={File01Icon} size={20} strokeWidth={1.5} />
       </div>
-      <p className="max-w-[280px] text-[13px] text-muted-foreground">
+      <p className="max-w-[280px] text-13 text-muted-foreground">
         Your records will appear here once a verified lab or hospital sends
         them to your K-ID profile.
       </p>
@@ -113,14 +111,14 @@ function RecordCard({
       <RecordIcon type={record.type} />
       <p
         style={fontDisplay}
-        className="mt-4 text-[15px] font-semibold text-foreground"
+        className="mt-4 text-15 font-semibold text-foreground"
       >
         {record.type}
       </p>
-      <p className="mt-1 text-[13px] text-muted-foreground">
+      <p className="mt-1 text-13 text-muted-foreground">
         Issued by {record.issuedBy}
       </p>
-      <p style={fontMono} className="mt-1.5 text-[11px] text-muted-foreground">
+      <p style={fontMono} className="mt-1.5 text-11 text-muted-foreground">
         {formatDate(record.issuedDate)}
       </p>
       <Button
@@ -129,7 +127,7 @@ function RecordCard({
         onClick={() => onView(record)}
         className="mt-4 gap-1.5 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
       >
-        <Eye size={14} strokeWidth={2} />
+        <HugeiconsIcon icon={EyeIcon} size={14} strokeWidth={2} />
         View
       </Button>
     </div>
@@ -153,51 +151,51 @@ function RecordModal({
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
             <RecordIcon type={record.type} />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <DialogTitle style={fontDisplay} className="text-18">
               {record.type}
             </DialogTitle>
           </div>
-          <DialogDescription className="text-left text-[13px]">
+          <DialogDescription className="text-left text-13">
             Issued by {record.issuedBy}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-1">
           <div>
-            <p className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
-              <CalendarClock size={13} />
+            <p className="mb-1.5 flex items-center gap-1.5 text-12 font-medium text-muted-foreground">
+              <HugeiconsIcon icon={CalendarClockIcon} size={13} />
               Date issued
             </p>
-            <p style={fontMono} className="text-[12.5px] text-foreground">
+            <p style={fontMono} className="text-13 text-foreground">
               {formatDate(record.issuedDate)}
             </p>
           </div>
 
           <div>
-            <p className="mb-1.5 text-[12px] font-medium text-muted-foreground">
+            <p className="mb-1.5 text-12 font-medium text-muted-foreground">
               Summary
             </p>
-            <p className="text-[13px] leading-relaxed text-foreground">
+            <p className="text-13 leading-relaxed text-foreground">
               {record.summary}
             </p>
           </div>
 
           <div>
-            <p className="mb-1.5 text-[12px] font-medium text-muted-foreground">
+            <p className="mb-1.5 text-12 font-medium text-muted-foreground">
               Details
             </p>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
+            <p className="text-13 leading-relaxed text-muted-foreground">
               {record.details}
             </p>
           </div>
 
           <div className="flex items-start gap-2.5 rounded-lg bg-muted px-3 py-2.5">
-            <Lock size={14} strokeWidth={2} className="mt-0.5 shrink-0 text-muted-foreground" />
+            <HugeiconsIcon icon={LockIcon} size={14} strokeWidth={2} className="mt-0.5 shrink-0 text-muted-foreground" />
             <div>
-              <p className="text-[12px] font-semibold text-foreground">
+              <p className="text-12 font-semibold text-foreground">
                 View Only
               </p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
+              <p className="mt-0.5 text-11 leading-relaxed text-muted-foreground">
                 This record cannot be edited or downloaded.
               </p>
             </div>
@@ -244,16 +242,16 @@ export default function PatientRecordsPage() {
             onClick={() => navigate(-1)}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
           >
-            <ArrowLeft size={16} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
           </button>
           <div>
             <h1
               style={fontDisplay}
-              className="text-[19px] font-semibold text-foreground"
+              className="text-18 font-semibold text-foreground"
             >
               My Health Records
             </h1>
-            <p className="text-[12.5px] text-muted-foreground">
+            <p className="text-13 text-muted-foreground">
               Records sent to your K-ID profile by verified labs and
               hospitals
             </p>

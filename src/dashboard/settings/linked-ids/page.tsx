@@ -1,7 +1,6 @@
-"use client";
-
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Link2, ShieldCheck } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, Link01Icon, SecurityCheckIcon } from "@hugeicons/core-free-icons";
 import TopBar from "../../_components/topbar";
 
 const fontDisplay = {
@@ -30,15 +29,15 @@ export default function LinkedIdsPage() {
           onClick={() => navigate("/dashboard/settings")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft size={16} />
-          <span className="text-[13px]">Back to Settings</span>
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
+          <span className="text-13">Back to Settings</span>
         </button>
 
         <section className="rounded-2xl border border-border bg-card">
           <div className="border-b border-border px-5 py-4">
             <h2
               style={fontDisplay}
-              className="text-[15px] font-semibold text-foreground"
+              className="text-15 font-semibold text-foreground"
             >
               Connected Identity Documents
             </h2>
@@ -51,22 +50,22 @@ export default function LinkedIdsPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-                    <Link2 size={18} strokeWidth={1.75} />
+                    <HugeiconsIcon icon={Link01Icon} size={18} strokeWidth={1.75} />
                   </div>
                   <div>
-                    <p className="text-[14px] font-medium text-foreground">
+                    <p className="text-14 font-medium text-foreground">
                       {item.type}
                     </p>
                     <p
                       style={fontMono}
-                      className="text-[12px] text-muted-foreground"
+                      className="text-12 text-muted-foreground"
                     >
                       {item.number}
                     </p>
                   </div>
                 </div>
-                <span className="flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-[11px] font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-                  <ShieldCheck size={12} />
+                <span className="flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-11 font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                  <HugeiconsIcon icon={SecurityCheckIcon} size={12} />
                   {item.status}
                 </span>
               </div>

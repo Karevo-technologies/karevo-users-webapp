@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { cn } from "../../lib/utils";
 
@@ -57,7 +55,7 @@ export function AlertDialogContent({
       />
       <div
         className={cn(
-          "relative max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-white/20 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-[#141927]/90",
+          "relative max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-white/20 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-[color:var(--kv-card-bg)]/90",
           className,
         )}
         {...props}

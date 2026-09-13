@@ -3,22 +3,25 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  AlertCircle,
-  ArrowRight,
-  Check,
-  Eye,
-  EyeOff,
-  Lock,
-  Mail,
-  ShieldCheck,
-} from "lucide-react";
+  AlertCircleIcon,
+  ArrowRight01Icon,
+  CheckIcon,
+  EyeIcon,
+  EyeOffIcon,
+  LockIcon,
+  Mail01Icon,
+  SecurityCheckIcon,
+} from "@hugeicons/core-free-icons";
 import logo from "../../assets/logo.png";
 
-const organisationBenefits = [
-  "Verify organisation access in seconds",
-  "Keep permissions protected and private",
-  "Maintain a secure access trail",
+const KAREVO_BRAND = "#3B00C5";
+
+const patientBenefits = [
+  "Access your health records anytime",
+  "Share consent with trusted providers",
+  "Keep your data private and protected",
 ];
 
 const LoginPage = () => {
@@ -35,17 +38,17 @@ const LoginPage = () => {
     setError("");
 
     if (!email.trim() && !password) {
-      setError("Enter your organisation email address and password.");
+      setError("Enter your email address and password.");
       return;
     }
 
     if (!email.trim()) {
-      setError("Enter your organisation email address.");
+      setError("Enter your email address.");
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Enter a valid organisation email address.");
+      setError("Enter a valid email address.");
       return;
     }
 
@@ -58,10 +61,10 @@ const LoginPage = () => {
 
     try {
       await login(email, password);
-      navigate("/org/dashboard");
+      navigate("/dashboard");
     } catch {
       setError(
-        "We couldn’t sign you in with those organisation credentials. Check your email and password and try again.",
+        "We couldn’t sign you in with those credentials. Check your email and password and try again.",
       );
     } finally {
       setIsLoading(false);
@@ -71,9 +74,9 @@ const LoginPage = () => {
   return (
     <main className="min-h-screen bg-[#f4f1eb] text-slate-900 antialiased">
       <div className="grid min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      
+
         {/* left section where the welcome is */}
-        <aside className="relative hidden overflow-hidden bg-[#00594f] px-10 py-12 text-white lg:flex lg:flex-col xl:px-16">
+        <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[color:var(--kv-brand)] to-[#6425E8] px-10 py-12 text-white lg:flex lg:flex-col xl:px-16">
           <div
             className="pointer-events-none absolute inset-0 opacity-20"
             style={{
@@ -83,53 +86,34 @@ const LoginPage = () => {
             }}
           />
           <div className="pointer-events-none absolute -bottom-28 -left-16 h-64 w-64 rounded-full border border-white/20" />
-            {/* for the abstract circle at the bottob left conrn */}
           <div className="relative flex items-center">
             <img
               src={logo}
-              alt="K-ID"
+              alt="Karevo"
               className="h-50 w-auto max-w-[150px] object-contain brightness-0 invert"
             />
-            {/* the invert might not be needed incase of white image provided */}
           </div>
 
           <div className="relative max-w-xl">
             <h1 className="kv-display max-w-md text-4xl font-bold leading-[1.12] tracking-tight xl:text-5xl">
-              Secure organisation access, made simple.
+              Your health, securely in your hands.
             </h1>
 
-            <ul className="mt-10 space-y-5" aria-label="K-ID organisation benefits">
-              {organisationBenefits.map((benefit) => (
+            <ul className="mt-10 space-y-5" aria-label="Karevo patient benefits">
+              {patientBenefits.map((benefit) => (
                 <li key={benefit} className="flex items-center gap-3 text-base font-medium text-white/90">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/15">
-                    <Check size={15} strokeWidth={2.5} aria-hidden="true" />
+                    <HugeiconsIcon icon={CheckIcon} size={15} strokeWidth={2.5} aria-hidden="true" />
                   </span>
                   {benefit}
                 </li>
               ))}
             </ul>
           </div>
-          {/* the above has same code but different paprent style for padding nad margining, comment pout for reuse if needed later */}
-          {/* <div className="relative my-auto max-w-xl pt-20">
-            <h1 className="kv-display max-w-md text-4xl font-bold leading-[1.12] tracking-tight xl:text-5xl">
-              Secure organisation access, made simple.
-            </h1>
-
-            <ul className="mt-10 space-y-5" aria-label="K-ID organisation benefits">
-              {organisationBenefits.map((benefit) => (
-                <li key={benefit} className="flex items-center gap-3 text-base font-medium text-white/90">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/15">
-                    <Check size={15} strokeWidth={2.5} aria-hidden="true" />
-                  </span>
-                  {benefit}
-                </li>
-              ))}
-            </ul>
-          </div> */}
 
           <p className="relative flex items-center gap-2 text-sm text-white/75 pt-4">
-            <ShieldCheck size={17} aria-hidden="true" />
-            Organisation access is for verified entities only.
+            <HugeiconsIcon icon={SecurityCheckIcon} size={17} aria-hidden="true" />
+            Your health information is encrypted and private.
           </p>
         </aside>
 
@@ -137,18 +121,15 @@ const LoginPage = () => {
         <section className="flex min-h-screen items-center justify-center px-6 py-12 sm:px-10 lg:px-16">
           <div className="w-full max-w-[385px]">
             <div className="mb-2 lg:hidden">
-              <img src={logo} alt="K-ID" className="h-20 w-auto max-w-[132px] object-contain" />
+              <img src={logo} alt="Karevo" className="h-20 w-auto max-w-[132px] object-contain" />
             </div>
 
             <header className="mb-9">
-              {/* <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-[#00594f]">
-                K-ID Organisation Portal
-              </p> */}
               <h1 className="kv-display text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Sign in to your organisation account
+                Sign in to your Karevo account
               </h1>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                Use your verified organisation credentials to continue.
+                Use your account credentials to continue.
               </p>
             </header>
 
@@ -158,31 +139,32 @@ const LoginPage = () => {
                   className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-rose-800"
                   role="alert"
                 >
-                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+                  <HugeiconsIcon icon={AlertCircleIcon} size={20} className="mt-0.5 shrink-0" aria-hidden="true" />
                   <p className="text-sm leading-5">{error}</p>
                 </div>
               )}
 
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-semibold text-slate-800">
-                  Organisation email address
+                  Email address
                 </label>
                 <div className="relative">
-                  <Mail
-                    className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
+                  <HugeiconsIcon
+                    icon={Mail01Icon}
+                    size={20}
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     aria-hidden="true"
                   />
                   <Input
                     id="email"
                     type="email"
                     autoComplete="email"
-                    placeholder="name@organisation.com"
+                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
                     aria-invalid={Boolean(error)}
-                    // className="h-[52px] w-full rounded-full border border-[#e6f2ec] bg-white pl-11 pr-4 text-[15px] text-[#1b2520] outline-none transition-colors duration-300 placeholder:text-[#a8b0ab] focus:border-[#00594f]"
-                    className="h-[52px] rounded-full  border-transparent bg-[#e5eeec] py-3 pl-12 pr-4 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:border-[#00594f] focus-visible:bg-white focus-visible:ring-[#00594f]/20"
+                    className="h-[52px] rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus-visible:border-[color:var(--kv-brand)] focus-visible:ring-[color:var(--kv-brand)]/20"
                   />
                 </div>
               </div>
@@ -192,13 +174,15 @@ const LoginPage = () => {
                   <label htmlFor="password" className="text-sm font-semibold text-slate-800">
                     Password
                   </label>
-                  <a href="#" className="text-sm font-semibold text-[#00594f] hover:underline">
+                  <a href="#" className="text-sm font-semibold text-[color:var(--kv-brand)] hover:underline">
                     Forgot password?
                   </a>
                 </div>
                 <div className="relative">
-                  <Lock
-                    className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
+                  <HugeiconsIcon
+                    icon={LockIcon}
+                    size={20}
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     aria-hidden="true"
                   />
                   <Input
@@ -210,16 +194,20 @@ const LoginPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
                     aria-invalid={Boolean(error)}
-                    className="h-[52px] rounded-2xl border-transparent bg-[#e5eeec] py-3 pl-12 pr-12 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:border-[#00594f] focus-visible:bg-white focus-visible:ring-[#00594f]/20"
+                    className="h-[52px] rounded-full border border-slate-200 bg-white py-3 pl-12 pr-12 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus-visible:border-[color:var(--kv-brand)] focus-visible:ring-[color:var(--kv-brand)]/20"
                   />
                   <button
                     type="button"
                     onClick={() => setIsPasswordVisible((visible) => !visible)}
-                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-[#00594f] hover:text-[#00594f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00594f]/30"
+                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-[color:var(--kv-brand)]/10 hover:text-[color:var(--kv-brand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--kv-brand)]/30"
                     aria-label={isPasswordVisible ? "Hide password" : "Show password"}
                     disabled={isLoading}
                   >
-                    {isPasswordVisible ? <EyeOff size={19} /> : <Eye size={19} />}
+                    {isPasswordVisible ? (
+                      <HugeiconsIcon icon={EyeOffIcon} size={19} />
+                    ) : (
+                      <HugeiconsIcon icon={EyeIcon} size={19} />
+                    )}
                   </button>
                 </div>
               </div>
@@ -227,22 +215,23 @@ const LoginPage = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="h-[52px] w-full rounded-2xl bg-[#00594f] text-sm font-semibold text-white shadow-none transition-colors hover:bg-[#004941] focus-visible:ring-[#00594f]/30"
+                style={{ backgroundColor: KAREVO_BRAND }}
+                className="h-[52px] w-full rounded-2xl text-sm font-semibold text-white shadow-none transition-colors hover:opacity-90 focus-visible:ring-[color:var(--kv-brand)]/30"
               >
                 {isLoading ? "Signing in…" : "Sign in"}
-                {!isLoading && <ArrowRight size={18} aria-hidden="true" />}
+                {!isLoading && <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />}
               </Button>
             </form>
 
-            <p className="mt-9 text-center text-sm text-[#00594f]">
-              New to K-ID?{" "}
-              <Link to="/register" className="font-semibold text-[#00594f] hover:underline">
+            <p className="mt-9 text-center text-sm text-slate-600">
+              New to Karevo?{" "}
+              <Link to="/register" className="font-semibold text-[color:var(--kv-brand)] hover:underline">
                 Create an account
               </Link>
             </p>
 
             <p className="mt-10 text-center text-xs leading-5 text-slate-500 lg:hidden">
-              Organisation access is for verified entities only.
+              Your health information is encrypted and private.
             </p>
           </div>
         </section>

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -15,13 +13,7 @@ import {
   Alert01Icon,
   InformationCircleIcon
 } from "@hugeicons/core-free-icons";
-
-// Central theme token mappings matching Karevo visual hierarchy
-const c = {
-  signal: "#3452D9",
-  verify: "#1C8C74",
-  danger: "#DF4949",
-};
+import { kvColors as c } from "../../lib/kv-colors";
 
 export default function CreateShareTokenPage() {
   const navigate = useNavigate();
@@ -108,7 +100,7 @@ export default function CreateShareTokenPage() {
   const isFormValid = selectedCategories.length > 0;
 
   return (
-    <div className="kv-root min-h-screen bg-slate-50/40 text-[#10151C] transition-colors duration-300 dark:bg-[#0A0E1A] dark:text-[#F2F4F7]">
+    <div className="kv-root min-h-screen bg-slate-50/40 text-[color:var(--kv-ink)] transition-colors duration-300 dark:bg-[#0A0E1A]">
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
         
         {/* ── HEADER BLOCK CONTROLLER ── */}
@@ -197,10 +189,10 @@ export default function CreateShareTokenPage() {
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleCategory(cat.id)}
-                        className="mt-1 h-4 w-4 rounded border-gray-300 text-[#3452D9] focus:ring-[#3452D9]/30 shrink-0"
+                        className="mt-1 h-4 w-4 rounded border-gray-300 text-[color:var(--kv-signal)] focus:ring-[color:var(--kv-signal)]/30 shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <span className="kv-display text-[13.5px] font-semibold block transition-colors group-hover:text-[#3452D9]">
+                        <span className="kv-display text-14 font-semibold block transition-colors group-hover:text-[color:var(--kv-signal)]">
                           {cat.label}
                         </span>
                         <span className="kv-body text-xs leading-normal block mt-0.5" style={{ color: "var(--kv-ink-soft)" }}>
@@ -254,7 +246,7 @@ export default function CreateShareTokenPage() {
                 value={tokenLabel}
                 onChange={(e) => setLabel(e.target.value)}
                 placeholder="e.g. Dr. Adaeze — Clinical Audit Verification"
-                className="w-full bg-transparent border rounded-xl px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#3452D9]/30 transition-all placeholder:text-slate-400"
+                className="w-full bg-transparent border rounded-xl px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[color:var(--kv-signal)]/30 transition-all placeholder:text-slate-400"
                 style={{ borderColor: "var(--kv-card-border)" }}
               />
             </section>
@@ -304,7 +296,7 @@ export default function CreateShareTokenPage() {
 
               {/* Underlying Short PIN code wrapper block */}
               <div className="space-y-1.5 w-full max-w-sm">
-                <span className="kv-mono text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--kv-ink-soft)" }}> Alphanumeric Access PIN </span>
+                <span className="kv-mono text-10 font-semibold uppercase tracking-widest" style={{ color: "var(--kv-ink-soft)" }}> Alphanumeric Access PIN </span>
                 <div className="kv-mono text-xl sm:text-2xl font-bold tracking-widest bg-slate-100 dark:bg-slate-950 px-4 py-3 rounded-xl border text-center select-all" style={{ borderColor: "var(--kv-card-border)" }}>
                   {generatedPIN}
                 </div>
@@ -319,7 +311,7 @@ export default function CreateShareTokenPage() {
                   Datasets: <span className="italic font-normal">{getSelectionsSummary()}</span>
                 </p>
                 {tokenLabel.trim() && (
-                  <p className="kv-mono text-[10px] tracking-wide mt-1 inline-block bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border" style={{ borderColor: "var(--kv-card-border)", color: "var(--kv-ink-soft)" }}>
+                  <p className="kv-mono text-10 tracking-wide mt-1 inline-block bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border" style={{ borderColor: "var(--kv-card-border)", color: "var(--kv-ink-soft)" }}>
                     Label: {tokenLabel}
                   </p>
                 )}
@@ -331,7 +323,7 @@ export default function CreateShareTokenPage() {
               <button
                 type="button"
                 onClick={copyToClipboard}
-                className="flex flex-col items-center justify-center p-3 rounded-xl border font-medium text-xs gap-1.5 transition-all bg-white hover:bg-slate-50 dark:bg-[#141927] dark:hover:bg-slate-800/50"
+                className="flex flex-col items-center justify-center p-3 rounded-xl border font-medium text-xs gap-1.5 transition-all bg-white hover:bg-slate-50 dark:bg-[color:var(--kv-card-bg)] dark:hover:bg-slate-800/50"
                 style={{ borderColor: "var(--kv-card-border)", color: "var(--kv-ink)" }}
               >
                 <HugeiconsIcon icon={Copy01Icon} size={15} />
@@ -341,7 +333,7 @@ export default function CreateShareTokenPage() {
               <button
                 type="button"
                 onClick={() => alert("Ecosystem messaging integration triggered.")}
-                className="flex flex-col items-center justify-center p-3 rounded-xl border font-medium text-xs gap-1.5 transition-all bg-white hover:bg-slate-50 dark:bg-[#141927] dark:hover:bg-slate-800/50"
+                className="flex flex-col items-center justify-center p-3 rounded-xl border font-medium text-xs gap-1.5 transition-all bg-white hover:bg-slate-50 dark:bg-[color:var(--kv-card-bg)] dark:hover:bg-slate-800/50"
                 style={{ borderColor: "var(--kv-card-border)", color: "var(--kv-ink)" }}
               >
                 <HugeiconsIcon icon={Share01Icon} size={15} />
