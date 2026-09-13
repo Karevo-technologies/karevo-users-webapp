@@ -1,7 +1,6 @@
-"use client";
-
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Activity,
   Bell,
@@ -24,11 +23,33 @@ import {
   Laptop,
   X,
 } from "lucide-react";
+  Activity01Icon,
+  BellIcon,
+  Link01Icon,
+  WifiOff01Icon,
+  LockIcon,
+  Key01Icon,
+  FingerPrintIcon,
+  SmartPhone01Icon,
+  Clock01Icon,
+  Shield01Icon,
+  FileCheckIcon,
+  ReloadIcon,
+  InformationCircleIcon,
+  ChevronRightIcon,
+  EyeIcon,
+  EyeOffIcon,
+  Alert01Icon,
+  LaptopIcon,
+  Cancel01Icon,
+} from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import TopBar from "../_components/topbar";
 import { TourCard } from "./TourCard";
+import { Toast } from "../_components/Toast";
+import { useToast } from "../_components/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -86,7 +107,7 @@ const initialDevices = [
 /* Small building blocks                                                  */
 /* ---------------------------------------------------------------------- */
 
-function RowIcon({ icon: Icon, tone }: { icon: any; tone: string }) {
+function RowIcon({ icon, tone }: { icon: any; tone: string }) {
   const tones: Record<string, string> = {
     primary: "bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
     destructive: "bg-muted text-muted-foreground",
@@ -96,28 +117,7 @@ function RowIcon({ icon: Icon, tone }: { icon: any; tone: string }) {
     <div
       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${tones[tone]}`}
     >
-      <Icon size={18} strokeWidth={1.75} />
-    </div>
-  );
-}
-
-function Toast({ toast }: { toast: { message: string; tone: string } | null }) {
-  if (!toast) return null;
-  const isPositive = toast.tone !== "negative";
-  return (
-    <div
-      className="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
-      role="status"
-      aria-live="polite"
-    >
-      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-white px-4 py-3 text-foreground shadow-lg animate-in fade-in slide-in-from-top-2 dark:bg-stone-900">
-        {isPositive ? (
-          <CheckCircle2 size={16} className="shrink-0 text-blue-600" />
-        ) : (
-          <XCircle size={16} className="shrink-0 text-blue-600" />
-        )}
-        <span className="text-[13px]">{toast.message}</span>
-      </div>
+      <HugeiconsIcon icon={icon} size={18} strokeWidth={1.75} />
     </div>
   );
 }
@@ -134,7 +134,7 @@ function SectionCard({
       <div className="border-b border-border px-5 py-4">
         <h2
           style={fontDisplay}
-          className="text-[15px] font-semibold text-foreground"
+          className="text-15 font-semibold text-foreground"
         >
           {title}
         </h2>
@@ -171,11 +171,11 @@ function SettingsRow({
 
       <div className="min-w-0 flex-1 pt-0.5">
         <p
-          className={`text-[14px] font-medium ${isDestructive ? "text-foreground" : "text-foreground"}`}
+          className={`text-14 font-medium ${isDestructive ? "text-foreground" : "text-foreground"}`}
         >
           {row.title}
         </p>
-        <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted-foreground">
+        <p className="mt-0.5 text-13 leading-relaxed text-muted-foreground">
           {row.description}
         </p>
         {children}
@@ -186,13 +186,14 @@ function SettingsRow({
         {row.type === "static" && (
           <span
             style={fontMono}
-            className="text-[12.5px] text-muted-foreground"
+            className="text-13 text-muted-foreground"
           >
             {row.value}
           </span>
         )}
         {isInteractive && (
-          <ChevronRight
+          <HugeiconsIcon
+            icon={ChevronRightIcon}
             size={16}
             strokeWidth={2}
             className={
@@ -263,19 +264,19 @@ function PinModal({
       <DialogContent className="sm:max-w-[380px]">
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <RowIcon icon={KeyRound} tone="primary" />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <RowIcon icon={Key01Icon} tone="primary" />
+            <DialogTitle style={fontDisplay} className="text-18">
               Update pin
             </DialogTitle>
           </div>
-          <DialogDescription className="text-left text-[13px]">
+          <DialogDescription className="text-left text-13">
             Choose a 4-digit pin you don't use anywhere else.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 py-1">
           <div>
-            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-12 font-medium text-muted-foreground">
               Current pin
             </label>
             <Input
@@ -289,7 +290,7 @@ function PinModal({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-12 font-medium text-muted-foreground">
               New pin
             </label>
             <Input
@@ -303,7 +304,7 @@ function PinModal({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-12 font-medium text-muted-foreground">
               Confirm new pin
             </label>
             <Input
@@ -320,15 +321,19 @@ function PinModal({
           <button
             type="button"
             onClick={() => setShowPins((s) => !s)}
-            className="flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground"
+            className="flex items-center gap-1.5 text-12 text-muted-foreground hover:text-foreground"
           >
-            {showPins ? <EyeOff size={13} /> : <Eye size={13} />}
+            {showPins ? (
+              <HugeiconsIcon icon={EyeOffIcon} size={13} />
+            ) : (
+              <HugeiconsIcon icon={EyeIcon} size={13} />
+            )}
             {showPins ? "Hide pins" : "Show pins"}
           </button>
 
           {error && (
-            <p className="flex items-center gap-1.5 text-[12px] text-destructive">
-              <AlertTriangle size={13} />
+            <p className="flex items-center gap-1.5 text-12 text-destructive">
+              <HugeiconsIcon icon={Alert01Icon} size={13} />
               {error}
             </p>
           )}
@@ -365,24 +370,24 @@ function DeviceRow({
     <div className="flex items-center gap-3 py-3">
       <RowIcon
         icon={
-          device.name.toLowerCase().includes("iphone") ? Smartphone : Laptop
+          device.name.toLowerCase().includes("iphone") ? SmartPhone01Icon : LaptopIcon
         }
         tone="stone"
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className="truncate text-[13.5px] font-medium text-foreground">
+          <p className="truncate text-14 font-medium text-foreground">
             {device.name}
           </p>
           {device.current && (
-            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-primary">
+            <span className="rounded-full bg-muted px-2 py-0.5 text-10 font-medium text-primary">
               This device
             </span>
           )}
         </div>
         <p
           style={fontMono}
-          className="mt-0.5 text-[11px] text-muted-foreground"
+          className="mt-0.5 text-11 text-muted-foreground"
         >
           {device.detail} · {device.lastActive}
         </p>
@@ -393,7 +398,7 @@ function DeviceRow({
           className="shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
           aria-label={`Remove ${device.name}`}
         >
-          <X size={15} />
+          <HugeiconsIcon icon={Cancel01Icon} size={15} />
         </button>
       )}
     </div>
@@ -416,12 +421,12 @@ function DevicesModal({
       <DialogContent className="sm:max-w-[380px]">
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <RowIcon icon={Smartphone} tone="primary" />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <RowIcon icon={SmartPhone01Icon} tone="primary" />
+            <DialogTitle style={fontDisplay} className="text-18">
               Devices
             </DialogTitle>
           </div>
-          <DialogDescription className="text-left text-[13px]">
+          <DialogDescription className="text-left text-13">
             Devices that have access to your K-ID account.
           </DialogDescription>
         </DialogHeader>
@@ -541,7 +546,7 @@ function ResetDeviceDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <RowIcon icon={AlertTriangle} tone="destructive" />
+            <RowIcon icon={Alert01Icon} tone="destructive" />
             <AlertDialogTitle>Reset this device?</AlertDialogTitle>
           </div>
           <AlertDialogDescription>
@@ -553,7 +558,7 @@ function ResetDeviceDialog({
         </AlertDialogHeader>
 
         <div className="pb-1">
-          <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+          <label className="mb-1.5 block text-12 font-medium text-muted-foreground">
             Type RESET to confirm
           </label>
           <Input
@@ -593,14 +598,14 @@ function PrivacyPolicyModal({
       <DialogContent className="sm:max-w-[520px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <RowIcon icon={Shield} tone="primary" />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <RowIcon icon={Shield01Icon} tone="primary" />
+            <DialogTitle style={fontDisplay} className="text-18">
               Privacy Policy
             </DialogTitle>
           </div>
         </DialogHeader>
 
-        <div className="space-y-4 text-[13px] leading-relaxed text-muted-foreground">
+        <div className="space-y-4 text-13 leading-relaxed text-muted-foreground">
           <p>
             <strong className="text-foreground">Information We Collect</strong>
             <br />
@@ -671,14 +676,14 @@ function TermsOfServiceModal({
       <DialogContent className="sm:max-w-[520px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <RowIcon icon={FileCheck2} tone="primary" />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <RowIcon icon={FileCheckIcon} tone="primary" />
+            <DialogTitle style={fontDisplay} className="text-18">
               Terms of Service
             </DialogTitle>
           </div>
         </DialogHeader>
 
-        <div className="space-y-4 text-[13px] leading-relaxed text-muted-foreground">
+        <div className="space-y-4 text-13 leading-relaxed text-muted-foreground">
           <p>
             <strong className="text-foreground">Acceptance of Terms</strong>
             <br />
@@ -758,22 +763,7 @@ export default function SettingsPage() {
   const [privacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
   const [termsOfServiceOpen, setTermsOfServiceOpen] = useState(false);
 
-  const [toast, setToast] = useState<{ message: string; tone: string } | null>(
-    null,
-  );
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function fireToast(message: string, tone = "positive") {
-    setToast({ message, tone });
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 3200);
-  }
-  useEffect(
-    () => () => {
-      if (toastTimer.current) clearTimeout(toastTimer.current);
-    },
-    [],
-  );
+  const { toast, fireToast } = useToast();
 
   function handleNinLockToggle(value: boolean) {
     if (!value) {
@@ -809,28 +799,28 @@ export default function SettingsPage() {
   const accountRows = [
     {
       type: "link",
-      icon: Activity,
+      icon: Activity01Icon,
       title: "Integrity Index",
       description: "View your identity trust score",
       onClick: () => navigate("/dashboard/security"),
     },
     {
       type: "link",
-      icon: Bell,
+      icon: BellIcon,
       title: "Notifications",
       description: "Manage alerts and verification updates",
       onClick: () => navigate("/dashboard/settings/notifications"),
     },
     {
       type: "link",
-      icon: Link2,
+      icon: Link01Icon,
       title: "Linked IDs",
       description: "View connected identity documents",
       onClick: () => navigate("/dashboard/settings/linked-ids"),
     },
     {
       type: "link",
-      icon: WifiOff,
+      icon: WifiOff01Icon,
       title: "Offline Data Sharing",
       description: "Enable offline access to your health records",
       onClick: () => navigate("/dashboard/settings/offline-sharing"),
@@ -840,7 +830,7 @@ export default function SettingsPage() {
   const securityRows = [
     {
       type: "toggle",
-      icon: Lock,
+      icon: LockIcon,
       title: "NIN Lock",
       description:
         "Prevent organisations from sharing your NIN without your explicit approval",
@@ -849,15 +839,22 @@ export default function SettingsPage() {
       ),
     },
     {
+      type: "toggle",
+      icon: FingerPrintIcon,
+      title: "Biometrics",
+      description: "Use fingerprint or face ID for quick access and approvals",
+      control: <Switch checked={biometrics} onCheckedChange={setBiometrics} />,
+    },
+    {
       type: "static",
-      icon: Clock,
+      icon: Clock01Icon,
       title: "Auto sign-out",
       description: "Automatically sign out after inactivity",
       value: autoSignOut ? `${autoSignOutMinutes} min` : "Off",
     },
     {
       type: "link",
-      icon: Smartphone,
+      icon: SmartPhone01Icon,
       title: "Devices",
       description: "Manage devices that have access to your account",
       value: `${devices.filter((d) => !d.current).length} other device${devices.filter((d) => !d.current).length !== 1 ? "s" : ""}`,
@@ -865,7 +862,7 @@ export default function SettingsPage() {
     },
     {
       type: "link",
-      icon: KeyRound,
+      icon: Key01Icon,
       title: "PIN",
       description: "Update your 4-digit security pin",
       onClick: () => setPinModalOpen(true),
@@ -875,21 +872,21 @@ export default function SettingsPage() {
   const privacyRows = [
     {
       type: "link",
-      icon: Shield,
+      icon: Shield01Icon,
       title: "Privacy Policy",
       description: "Review how your data is handled",
       onClick: () => setPrivacyPolicyOpen(true),
     },
     {
       type: "link",
-      icon: FileCheck2,
+      icon: FileCheckIcon,
       title: "Terms of Service",
       description: "Read the terms governing your use of K-ID",
       onClick: () => setTermsOfServiceOpen(true),
     },
     {
       type: "static",
-      icon: Info,
+      icon: InformationCircleIcon,
       title: "Licenses",
       description: "Open source licenses and attributions",
       value: "v1.0.0",
@@ -899,7 +896,7 @@ export default function SettingsPage() {
   const destructiveRows = [
     {
       type: "destructive",
-      icon: RotateCcw,
+      icon: ReloadIcon,
       title: "Reset this device",
       description: "Remove all local data from this device",
       onClick: () => setResetDeviceOpen(true),

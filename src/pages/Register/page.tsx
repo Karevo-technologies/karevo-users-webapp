@@ -4,7 +4,14 @@ import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card } from "../../components/ui/card";
-import { Mail, Lock, User, AlertCircle, CheckCircle } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Mail01Icon,
+  LockIcon,
+  UserIcon,
+  AlertCircleIcon,
+  CheckmarkCircle02Icon,
+} from "@hugeicons/core-free-icons";
 import logo from "../../assets/logo.png";
 
 const RegisterPage = () => {
@@ -109,7 +116,7 @@ const RegisterPage = () => {
             {/* Context Error Notice */}
             {errors.submit && (
               <div className="flex items-start gap-3 p-3.5 bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/50 rounded-xl animate-in fade-in slide-in-from-top-1 duration-200">
-                <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
+                <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
                 <p className="text-sm font-medium text-rose-700 dark:text-rose-300">{errors.submit}</p>
               </div>
             )}
@@ -120,7 +127,7 @@ const RegisterPage = () => {
                 Full Name
               </label>
               <div className="relative group">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <HugeiconsIcon icon={UserIcon} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Input
                   id="name"
                   type="text"
@@ -142,7 +149,7 @@ const RegisterPage = () => {
                 Email Address
               </label>
               <div className="relative group">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <HugeiconsIcon icon={Mail01Icon} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Input
                   id="email"
                   type="email"
@@ -164,7 +171,7 @@ const RegisterPage = () => {
                 Password
               </label>
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <HugeiconsIcon icon={LockIcon} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Input
                   id="password"
                   type="password"
@@ -194,7 +201,7 @@ const RegisterPage = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-[11px] font-semibold tracking-wide uppercase text-slate-400 dark:text-slate-500">
+                  <p className="text-11 font-semibold tracking-wide uppercase text-slate-400 dark:text-slate-500">
                     {passwordStrength < 2 && "Security Level: Weak"}
                     {passwordStrength === 2 && "Security Level: Fair"}
                     {passwordStrength === 3 && "Security Level: Good"}
@@ -210,7 +217,7 @@ const RegisterPage = () => {
                 Confirm Password
               </label>
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <HugeiconsIcon icon={LockIcon} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -226,7 +233,7 @@ const RegisterPage = () => {
               )}
               {formData.password && formData.confirmPassword === formData.password && (
                 <div className="flex items-center gap-1.5 pl-1 mt-1.5 animate-in fade-in duration-200">
-                  <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} className="text-emerald-600 dark:text-emerald-400" />
                   <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Credential mapping aligns</p>
                 </div>
               )}

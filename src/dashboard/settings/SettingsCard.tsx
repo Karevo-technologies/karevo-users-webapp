@@ -31,8 +31,8 @@ export function SettingsCard({
           <HugeiconsIcon icon={icon} size={18} strokeWidth={1.75} />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="text-[15px] font-semibold text-ink">{title}</h2>
-          <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink-soft">
+          <h2 className="text-15 font-semibold text-ink">{title}</h2>
+          <p className="mt-0.5 text-13 leading-relaxed text-ink-soft">
             {description}
           </p>
         </div>

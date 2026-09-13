@@ -1,5 +1,3 @@
-"use client";
-
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   FileValidationIcon,
@@ -7,7 +5,7 @@ import {
   MedicalFileIcon,
   Setting07Icon,
 } from "@hugeicons/core-free-icons";
-import logo from "../../assets/logo.png";
+import logoMark from "../../assets/logo-mark.png";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -48,19 +46,14 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop / tablet-landscape rail */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-cloud bg-paper/50 lg:flex">
-        <div className="mt-auto" />
-
-        {/* Symmetrically aligned branding header frame */}
-        <div className="flex h-16 items-center px-5">
-          <img
-            src={logo} // Replace with 'logo' if imported as 'logo' in your file framework
-            alt="Karevo Logo"
-            className="h-45 pt-10 w-auto object-contain"
-          />
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-cloud bg-paper lg:flex">
+        {/* Branding header */}
+        <div className="flex h-16 shrink-0 items-center gap-2 px-5">
+          <img src={logoMark} alt="" className="h-7 w-7 shrink-0 object-contain" />
+          <span className="kv-display text-lg font-bold text-ink">Karevo</span>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 px-12 py-2" data-tour="nav">
+        <nav className="flex flex-1 flex-col gap-1 px-3 py-2" data-tour="nav">
           {navItems.map((item) => {
             const isActive = isPathActive(pathname ?? "", item.href);
             return (
@@ -71,13 +64,13 @@ export default function Sidebar() {
                 className={
                   "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold transition-colors " +
                   (isActive
-                    ? "bg-blue-600 text-white"
-                    : "text-ink-soft hover:bg-paper/40 hover:text-ink")
+                    ? "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                    : "text-ink-soft hover:bg-paper/70 hover:text-ink")
                 }
               >
                 <HugeiconsIcon
                   icon={item.icon}
-                  size={30}
+                  size={20}
                   strokeWidth={isActive ? 2.25 : 1.75}
                 />
                 {item.label}
@@ -89,7 +82,7 @@ export default function Sidebar() {
 
       {/* Mobile / tablet-portrait bottom bar */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-cloud bg-paper/95 backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 flex rounded-t-3xl border-t border-cloud bg-paper/95 backdrop-blur lg:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         data-tour="menu"
       >
@@ -100,17 +93,25 @@ export default function Sidebar() {
               key={item.href}
               to={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={
-                "flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition-colors " +
-                (isActive ? "text-blue-600" : "text-ink-soft")
-              }
+              className="flex flex-1 flex-col items-center gap-1 py-2.5 text-11 font-semibold transition-colors"
             >
-              <HugeiconsIcon
-                icon={item.icon}
-                size={22}
-                strokeWidth={isActive ? 2.25 : 1.75}
-              />
-              {item.label}
+              <span
+                className={
+                  "flex h-8 w-8 items-center justify-center rounded-xl transition-colors " +
+                  (isActive
+                    ? "bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400"
+                    : "text-ink-soft")
+                }
+              >
+                <HugeiconsIcon
+                  icon={item.icon}
+                  size={20}
+                  strokeWidth={isActive ? 2.25 : 1.75}
+                />
+              </span>
+              <span className={isActive ? "text-blue-600 dark:text-blue-400" : "text-ink-soft"}>
+                {item.label}
+              </span>
             </Link>
           );
         })}

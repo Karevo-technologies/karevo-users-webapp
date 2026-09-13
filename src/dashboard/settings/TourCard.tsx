@@ -1,5 +1,3 @@
-"use client";
-
 import { Rocket01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { useTour } from "../_components/DashboardTour";
