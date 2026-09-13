@@ -2,6 +2,27 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
+  Activity,
+  Bell,
+  Link2,
+  WifiOff,
+  Lock,
+  KeyRound,
+  Smartphone,
+  Clock,
+  Shield,
+  FileCheck2,
+  RotateCcw,
+  Info,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Laptop,
+  X,
+} from "lucide-react";
   Activity01Icon,
   BellIcon,
   Link01Icon,
@@ -452,8 +473,8 @@ function RemoveDeviceDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Remove {device.name}?</AlertDialogTitle>
           <AlertDialogDescription>
-            This device will be signed out immediately and will need your pin or
-            biometrics to sign back in.
+            This device will be signed out immediately and will need your pin
+            to sign back in.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -589,9 +610,9 @@ function PrivacyPolicyModal({
             <strong className="text-foreground">Information We Collect</strong>
             <br />
             We collect information you provide directly, including your name,
-            National Identification Number (NIN), biometric data, and health
-            records. We also collect device information and usage data to
-            improve our services.
+            National Identification Number (NIN), and health records. We also
+            collect device information and usage data to improve our
+            services.
           </p>
           <p>
             <strong className="text-foreground">How We Use Your Data</strong>
@@ -675,8 +696,8 @@ function TermsOfServiceModal({
             </strong>
             <br />
             You are responsible for maintaining the confidentiality of your
-            credentials, including your PIN and biometric data. Notify us
-            immediately of any unauthorized use.
+            credentials, including your PIN. Notify us immediately of any
+            unauthorized use.
           </p>
           <p>
             <strong className="text-foreground">Acceptable Use</strong>
@@ -727,7 +748,6 @@ function TermsOfServiceModal({
 export default function SettingsPage() {
   const navigate = useNavigate();
   const [ninLock, setNinLock] = useState(true);
-  const [biometrics, setBiometrics] = useState(false);
   const [autoSignOut] = useState(true);
   const [autoSignOutMinutes] = useState(5);
 

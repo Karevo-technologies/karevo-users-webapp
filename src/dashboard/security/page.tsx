@@ -94,8 +94,8 @@ export default function SafeguardPage() {
     },
     {
       icon: Shield01Icon,
-      title: "Enforce biometric validation",
-      desc: "Never disable system application locks or share device authentication patterns.",
+      title: "Keep your PIN private",
+      desc: "Never disable system application locks or share your PIN with anyone.",
     },
   ];
 
