@@ -98,7 +98,7 @@ export default function OfflineSharingPage() {
                 className="inline-block mr-1.5 -mt-0.5"
               />
               Offline data is stored locally on your device and encrypted. It
-              will only be accessible via your PIN or biometrics.
+              will only be accessible via your PIN.
             </div>
           </div>
         </section>
