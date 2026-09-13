@@ -110,7 +110,7 @@ export function InstallBanner() {
       <button
         type="button"
         onClick={promptEvent ? install : close}
-        className="inline-flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-blue-600 px-4 text-[13px] font-semibold text-white transition-colors duration-300 hover:bg-blue-700"
+        className="inline-flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-blue-600 px-4 text-13 font-semibold text-white transition-colors duration-300 hover:bg-blue-700"
       >
         <HugeiconsIcon
           icon={promptEvent ? Download04Icon : ArrowUp01Icon}

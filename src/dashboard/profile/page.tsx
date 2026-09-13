@@ -1,24 +1,20 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import {
-  Bell,
-  Sun,
-  Moon,
-  Monitor,
-  Sparkles,
-  ShieldCheck,
-  KeyRound,
-  Laptop,
-  UserX,
-  CheckCircle2,
-  XCircle,
-  Eye,
-  EyeOff,
-  ArrowLeft,
-  type LucideIcon,
-} from "lucide-react";
+  BellIcon,
+  Sun01Icon,
+  MoonIcon,
+  ComputerIcon,
+  SparklesIcon,
+  SecurityCheckIcon,
+  Key01Icon,
+  LaptopIcon,
+  UserRemove01Icon,
+  EyeIcon,
+  EyeOffIcon,
+  ArrowLeft01Icon,
+} from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -44,6 +40,8 @@ import TopBar from "../_components/topbar";
 import { useAuth } from "../../context/AuthContext";
 import { getThemeMode, setThemeMode, type ThemeMode } from "../../lib/theme";
 import { useTour } from "../_components/DashboardTour";
+import { Toast } from "../_components/Toast";
+import { useToast } from "../_components/use-toast";
 
 const fontDisplay = {
   fontFamily: "'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif",
@@ -52,32 +50,7 @@ const fontMono = {
   fontFamily: "ui-monospace, SFMono-Regular, 'JetBrains Mono', monospace",
 };
 
-function Toast({
-  toast,
-}: {
-  toast: { message: string; tone: string } | null;
-}) {
-  if (!toast) return null;
-  const isPositive = toast.tone !== "negative";
-  return (
-    <div
-      className="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
-      role="status"
-      aria-live="polite"
-    >
-      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-white px-4 py-3 text-foreground shadow-lg animate-in fade-in slide-in-from-top-2 dark:bg-stone-900">
-        {isPositive ? (
-          <CheckCircle2 size={16} className="shrink-0 text-blue-600" />
-        ) : (
-          <XCircle size={16} className="shrink-0 text-blue-600" />
-        )}
-        <span className="text-[13px]">{toast.message}</span>
-      </div>
-    </div>
-  );
-}
-
-function RowIcon({ icon: Icon, tone }: { icon: LucideIcon; tone: string }) {
+function RowIcon({ icon, tone }: { icon: IconSvgElement; tone: string }) {
   const tones: Record<string, string> = {
     primary: "bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
     destructive: "bg-muted text-muted-foreground",
@@ -86,7 +59,7 @@ function RowIcon({ icon: Icon, tone }: { icon: LucideIcon; tone: string }) {
     <div
       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${tones[tone]}`}
     >
-      <Icon size={18} strokeWidth={1.75} />
+      <HugeiconsIcon icon={icon} size={18} strokeWidth={1.75} />
     </div>
   );
 }
@@ -103,7 +76,7 @@ function SectionCard({
       <div className="border-b border-border px-5 py-4">
         <h2
           style={fontDisplay}
-          className="text-[15px] font-semibold text-foreground"
+          className="text-15 font-semibold text-foreground"
         >
           {title}
         </h2>
@@ -116,11 +89,11 @@ function SectionCard({
 const appearanceOptions: {
   value: ThemeMode;
   label: string;
-  icon: LucideIcon;
+  icon: IconSvgElement;
 }[] = [
-  { value: "light", label: "Light", icon: Sun },
-  { value: "dark", label: "Dark", icon: Moon },
-  { value: "system", label: "System", icon: Monitor },
+  { value: "light", label: "Light", icon: Sun01Icon },
+  { value: "dark", label: "Dark", icon: MoonIcon },
+  { value: "system", label: "System", icon: ComputerIcon },
 ];
 
 export default function ProfilePage() {
@@ -144,14 +117,7 @@ export default function ProfilePage() {
   const [sessionsOpen, setSessionsOpen] = useState(false);
   const [deactivateOpen, setDeactivateOpen] = useState(false);
 
-  const [toast, setToast] = useState<{ message: string; tone: string } | null>(
-    null,
-  );
-
-  function fireToast(message: string, tone = "positive") {
-    setToast({ message, tone });
-    setTimeout(() => setToast(null), 3200);
-  }
+  const { toast, fireToast } = useToast();
 
   function handleAppearanceChange(value: ThemeMode) {
     setThemeModeState(value);
@@ -175,8 +141,8 @@ export default function ProfilePage() {
           onClick={() => navigate("/dashboard/home")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft size={16} />
-          <span className="text-[13px]">Back to Home</span>
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
+          <span className="text-13">Back to Home</span>
         </button>
 
         {/* Header */}
@@ -187,11 +153,11 @@ export default function ProfilePage() {
           <div className="min-w-0">
             <h2
               style={fontDisplay}
-              className="truncate text-[17px] font-semibold text-foreground"
+              className="truncate text-17 font-semibold text-foreground"
             >
               {user?.name ?? "User"}
             </h2>
-            <p className="truncate text-[13px] text-muted-foreground">
+            <p className="truncate text-13 text-muted-foreground">
               {user?.email ?? ""}
             </p>
           </div>
@@ -201,12 +167,12 @@ export default function ProfilePage() {
         <SectionCard title="Notifications">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={Bell} tone="primary" />
+              <RowIcon icon={BellIcon} tone="primary" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   Email notifications
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   Receive updates via email
                 </p>
               </div>
@@ -226,12 +192,12 @@ export default function ProfilePage() {
           </div>
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={Bell} tone="primary" />
+              <RowIcon icon={BellIcon} tone="primary" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   SMS notifications
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   Receive updates via SMS
                 </p>
               </div>
@@ -249,12 +215,12 @@ export default function ProfilePage() {
           </div>
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={Bell} tone="primary" />
+              <RowIcon icon={BellIcon} tone="primary" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   Push notifications
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   Receive in-app alerts
                 </p>
               </div>
@@ -291,8 +257,8 @@ export default function ProfilePage() {
                         : "border-border text-muted-foreground hover:bg-muted"
                     }`}
                   >
-                    <opt.icon size={18} strokeWidth={1.75} />
-                    <span className="text-[13px] font-medium">{opt.label}</span>
+                    <HugeiconsIcon icon={opt.icon} size={18} strokeWidth={1.75} />
+                    <span className="text-13 font-medium">{opt.label}</span>
                   </button>
                 );
               })}
@@ -304,12 +270,12 @@ export default function ProfilePage() {
         <SectionCard title="Getting started">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={Sparkles} tone="primary" />
+              <RowIcon icon={SparklesIcon} tone="primary" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   Product tour
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   Take a guided tour around the app
                 </p>
               </div>
@@ -324,12 +290,12 @@ export default function ProfilePage() {
         <SectionCard title="Security">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={ShieldCheck} tone="primary" />
+              <RowIcon icon={SecurityCheckIcon} tone="primary" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   Two-factor authentication
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   Add an extra layer of security to your account
                 </p>
               </div>
@@ -349,12 +315,12 @@ export default function ProfilePage() {
           </div>
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={KeyRound} tone="primary" />
+              <RowIcon icon={Key01Icon} tone="primary" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   Password
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   Change your account password
                 </p>
               </div>
@@ -369,12 +335,12 @@ export default function ProfilePage() {
           </div>
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={Laptop} tone="primary" />
+              <RowIcon icon={LaptopIcon} tone="primary" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   Active sessions
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   View devices signed in to your account
                 </p>
               </div>
@@ -393,12 +359,12 @@ export default function ProfilePage() {
         <SectionCard title="Danger zone">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <RowIcon icon={UserX} tone="destructive" />
+              <RowIcon icon={UserRemove01Icon} tone="destructive" />
               <div>
-                <p className="text-[14px] font-medium text-foreground">
+                <p className="text-14 font-medium text-foreground">
                   Deactivate account
                 </p>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-12 text-muted-foreground">
                   Temporarily disable your account
                 </p>
               </div>
@@ -492,19 +458,19 @@ function PasswordModal({
       <DialogContent className="sm:max-w-[380px]">
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <RowIcon icon={KeyRound} tone="primary" />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <RowIcon icon={Key01Icon} tone="primary" />
+            <DialogTitle style={fontDisplay} className="text-18">
               Change password
             </DialogTitle>
           </div>
-          <DialogDescription className="text-left text-[13px]">
+          <DialogDescription className="text-left text-13">
             Choose a strong password you don't use anywhere else.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 py-1">
           <div>
-            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-12 font-medium text-muted-foreground">
               Current password
             </label>
             <Input
@@ -515,7 +481,7 @@ function PasswordModal({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-12 font-medium text-muted-foreground">
               New password
             </label>
             <Input
@@ -526,7 +492,7 @@ function PasswordModal({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+            <label className="mb-1.5 block text-12 font-medium text-muted-foreground">
               Confirm new password
             </label>
             <Input
@@ -539,13 +505,17 @@ function PasswordModal({
           <button
             type="button"
             onClick={() => setShow((s) => !s)}
-            className="flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground"
+            className="flex items-center gap-1.5 text-12 text-muted-foreground hover:text-foreground"
           >
-            {show ? <EyeOff size={13} /> : <Eye size={13} />}
+            {show ? (
+              <HugeiconsIcon icon={EyeOffIcon} size={13} />
+            ) : (
+              <HugeiconsIcon icon={EyeIcon} size={13} />
+            )}
             {show ? "Hide passwords" : "Show passwords"}
           </button>
           {error && (
-            <p className="text-[12px] text-destructive">{error}</p>
+            <p className="text-12 text-destructive">{error}</p>
           )}
         </div>
 
@@ -625,12 +595,12 @@ function SessionsModal({
       <DialogContent className="sm:max-w-[380px]">
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
-            <RowIcon icon={Laptop} tone="primary" />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <RowIcon icon={LaptopIcon} tone="primary" />
+            <DialogTitle style={fontDisplay} className="text-18">
               Active sessions
             </DialogTitle>
           </div>
-          <DialogDescription className="text-left text-[13px]">
+          <DialogDescription className="text-left text-13">
             Devices currently signed in to your account.
           </DialogDescription>
         </DialogHeader>
@@ -638,21 +608,21 @@ function SessionsModal({
         <div className="divide-y divide-border">
           {sessions.map((s) => (
             <div key={s.id} className="flex items-center gap-3 py-3">
-              <RowIcon icon={Laptop} tone="primary" />
+              <RowIcon icon={LaptopIcon} tone="primary" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <p className="truncate text-[13.5px] font-medium text-foreground">
+                  <p className="truncate text-14 font-medium text-foreground">
                     {s.name}
                   </p>
                   {s.current && (
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-primary">
+                    <span className="rounded-full bg-muted px-2 py-0.5 text-10 font-medium text-primary">
                       This device
                     </span>
                   )}
                 </div>
                 <p
                   style={fontMono}
-                  className="mt-0.5 text-[11px] text-muted-foreground"
+                  className="mt-0.5 text-11 text-muted-foreground"
                 >
                   {s.detail} · {s.lastActive}
                 </p>
@@ -660,7 +630,7 @@ function SessionsModal({
               {!s.current && (
                 <button
                   onClick={() => signOut(s.id, s.name)}
-                  className="shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                  className="shrink-0 rounded-lg px-2.5 py-1.5 text-12 font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   Sign out
                 </button>

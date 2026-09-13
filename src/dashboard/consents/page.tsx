@@ -1,25 +1,23 @@
-"use client";
-
-import { useState, useEffect, useRef, type ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, type ReactNode } from "react";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import {
-  Building2,
-  Landmark,
-  Pill,
-  ShieldCheck,
-  Hourglass,
-  History as HistoryIcon,
-  Check,
-  X,
-  ShieldOff,
-  ChevronRight,
-  CalendarClock,
-  Target,
-  ArrowLeft,
-  CheckCircle2,
-  XCircle,
-  type LucideIcon,
-} from "lucide-react";
+  Building02Icon,
+  LandmarkIcon,
+  PillIcon,
+  SecurityCheckIcon,
+  HourglassIcon,
+  HistoryIcon,
+  CheckIcon,
+  Cancel01Icon,
+  ShieldMinusIcon,
+  ChevronRightIcon,
+  CalendarClockIcon,
+  Target01Icon,
+} from "@hugeicons/core-free-icons";
+import { StatCard } from "../_components/StatCard";
+import { Toast } from "../_components/Toast";
+import { useToast } from "../_components/use-toast";
+import TopBar from "../_components/topbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -96,16 +94,14 @@ interface HistoryConsent {
   note: string;
 }
 
-type ToastState = { message: string; tone: string } | null;
-
 /* ---------------------------------------------------------------------- */
 /* Data                                                                    */
 /* ---------------------------------------------------------------------- */
 
-const ORG_ICON: Record<OrgKind, LucideIcon> = {
-  hospital: Building2,
-  insurer: Landmark,
-  pharmacy: Pill,
+const ORG_ICON: Record<OrgKind, IconSvgElement> = {
+  hospital: Building02Icon,
+  insurer: LandmarkIcon,
+  pharmacy: PillIcon,
 };
 
 const initialPending: PendingConsent[] = [
@@ -187,17 +183,16 @@ function OrgIcon({
   kind: OrgKind;
   tone?: "primary" | "muted";
 }) {
-  const Icon = ORG_ICON[kind] || Building2;
+  const icon = ORG_ICON[kind] || Building02Icon;
   const tones: Record<"primary" | "muted", string> = {
-    primary:
-      "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 ring-blue-100 dark:ring-blue-900",
-    muted: "bg-muted text-muted-foreground ring-border",
+    primary: "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300",
+    muted: "bg-muted text-muted-foreground",
   };
   return (
     <div
-      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ${tones[tone]}`}
+      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${tones[tone]}`}
     >
-      <Icon size={19} strokeWidth={1.75} />
+      <HugeiconsIcon icon={icon} size={19} strokeWidth={1.75} />
     </div>
   );
 }
@@ -209,7 +204,7 @@ function ScopeChips({ scope }: { scope: string[] }) {
         <span
           key={s}
           style={fontMono}
-          className="rounded-md bg-muted px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
+          className="rounded-md bg-muted px-2 py-1 text-10 font-medium uppercase tracking-wide text-muted-foreground"
         >
           {s}
         </span>
@@ -268,41 +263,11 @@ function CountdownRing({
         />
       </svg>
       <div
-        className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold"
+        className="absolute inset-0 flex items-center justify-center text-11 font-semibold"
         style={{ color, ...fontMono }}
       >
         {daysLeft}d
       </div>
-    </div>
-  );
-}
-
-function StatCard({
-  icon: Icon,
-  count,
-  label,
-  tone,
-}: {
-  icon: LucideIcon;
-  count: number;
-  label: string;
-  tone: "primary" | "muted";
-}) {
-  const tones: Record<"primary" | "muted", string> = {
-    primary: "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300",
-    muted: "bg-muted text-muted-foreground",
-  };
-  return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div
-        className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl ${tones[tone]}`}
-      >
-        <Icon size={18} strokeWidth={1.75} />
-      </div>
-      <p className="text-2xl font-semibold leading-none text-foreground">
-        {count}
-      </p>
-      <p className="mt-1.5 text-[13px] text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -320,13 +285,13 @@ function SectionCard({
     <section className="rounded-2xl border border-border bg-card">
       <div className="flex items-baseline justify-between gap-3 border-b border-border px-5 py-4">
         <h2
-          className="text-[15px] font-semibold text-foreground"
+          className="text-15 font-semibold text-foreground"
           style={fontDisplay}
         >
           {title}
         </h2>
         {subtitle && (
-          <span className="text-[12px] text-muted-foreground">{subtitle}</span>
+          <span className="text-12 text-muted-foreground">{subtitle}</span>
         )}
       </div>
       <div className="px-5">{children}</div>
@@ -334,13 +299,13 @@ function SectionCard({
   );
 }
 
-function EmptyState({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
+function EmptyState({ icon, label }: { icon: IconSvgElement; label: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-        <Icon size={20} strokeWidth={1.5} />
+        <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} />
       </div>
-      <p className="max-w-[240px] text-[13px] text-muted-foreground">{label}</p>
+      <p className="max-w-[240px] text-13 text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -365,27 +330,6 @@ function TimelineRow({
   );
 }
 
-function Toast({ toast }: { toast: ToastState }) {
-  if (!toast) return null;
-  const isPositive = toast.tone === "positive";
-  return (
-    <div
-      className="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
-      role="status"
-      aria-live="polite"
-    >
-      <div className="flex items-center gap-2.5 rounded-xl border border-border bg-white px-4 py-3 text-foreground shadow-lg animate-in fade-in slide-in-from-top-2 dark:bg-stone-900">
-        {isPositive ? (
-          <CheckCircle2 size={16} className="shrink-0 text-blue-600" />
-        ) : (
-          <XCircle size={16} className="shrink-0 text-blue-600" />
-        )}
-        <span className="text-[13px]">{toast.message}</span>
-      </div>
-    </div>
-  );
-}
-
 function PendingRow({
   item,
   isLast,
@@ -402,16 +346,16 @@ function PendingRow({
       <OrgIcon kind={item.kind} tone="primary" />
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
-          <p className="truncate text-[14px] font-medium text-foreground">
+          <p className="truncate text-14 font-medium text-foreground">
             {item.org}
           </p>
-          <Badge className="shrink-0 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+          <Badge className="shrink-0 border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-400">
             Pending
           </Badge>
         </div>
         <p
           style={fontMono}
-          className="mt-0.5 text-[11px] text-muted-foreground"
+          className="mt-0.5 text-11 text-muted-foreground"
         >
           Requested {item.requestedAt} · asking for {item.requestedDays} days
         </p>
@@ -422,7 +366,7 @@ function PendingRow({
             onClick={() => onOpenApprove(item)}
             className="gap-1.5 bg-blue-600 hover:bg-blue-700"
           >
-            <Check size={14} strokeWidth={2.25} />
+            <HugeiconsIcon icon={CheckIcon} size={14} strokeWidth={2.25} />
             Review &amp; approve
           </Button>
           <Button
@@ -431,7 +375,7 @@ function PendingRow({
             onClick={() => onOpenDecline(item)}
             className="gap-1.5 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            <X size={14} strokeWidth={2.25} />
+            <HugeiconsIcon icon={Cancel01Icon} size={14} strokeWidth={2.25} />
             Decline
           </Button>
         </div>
@@ -458,7 +402,7 @@ function ActiveRow({
         <div className="flex items-start justify-between gap-3">
           <button
             onClick={() => onOpenDetails(item)}
-            className="truncate text-left text-[14px] font-medium text-foreground hover:underline underline-offset-2"
+            className="truncate text-left text-14 font-medium text-foreground hover:underline underline-offset-2"
           >
             {item.org}
           </button>
@@ -466,7 +410,7 @@ function ActiveRow({
         </div>
         <p
           style={fontMono}
-          className="mt-0.5 text-[11px] text-muted-foreground"
+          className="mt-0.5 text-11 text-muted-foreground"
         >
           Granted {item.grantedAt}
         </p>
@@ -479,7 +423,7 @@ function ActiveRow({
             className="gap-1 text-muted-foreground hover:bg-muted"
           >
             Details
-            <ChevronRight size={14} />
+            <HugeiconsIcon icon={ChevronRightIcon} size={14} />
           </Button>
           <Button
             size="sm"
@@ -487,7 +431,7 @@ function ActiveRow({
             onClick={() => onOpenRevoke(item)}
             className="gap-1.5 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            <ShieldOff size={14} strokeWidth={2} />
+            <HugeiconsIcon icon={ShieldMinusIcon} size={14} strokeWidth={2} />
             Revoke access
           </Button>
         </div>
@@ -498,9 +442,9 @@ function ActiveRow({
 
 const HISTORY_BADGE: Record<HistoryStatus, string> = {
   expired: "border-border bg-muted text-muted-foreground",
-  revoked:
-    "border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
-  declined: "border-border bg-muted text-muted-foreground",
+  revoked: "border-border bg-muted text-muted-foreground",
+  declined:
+    "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400",
 };
 const HISTORY_LABEL: Record<HistoryStatus, string> = {
   expired: "Expired",
@@ -525,7 +469,7 @@ function HistoryRow({
         className="min-w-0 flex-1 text-left"
       >
         <div className="flex items-start justify-between gap-3">
-          <p className="truncate text-[14px] font-medium text-muted-foreground">
+          <p className="truncate text-14 font-medium text-muted-foreground">
             {item.org}
           </p>
           <Badge
@@ -537,7 +481,7 @@ function HistoryRow({
         </div>
         <p
           style={fontMono}
-          className="mt-0.5 text-[11px] text-muted-foreground"
+          className="mt-0.5 text-11 text-muted-foreground"
         >
           {HISTORY_LABEL[item.status]} {item.resolvedAt}
         </p>
@@ -572,26 +516,26 @@ function ApproveModal({
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
             <OrgIcon kind={item.kind} tone="primary" />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <DialogTitle style={fontDisplay} className="text-18">
               {item.org}
             </DialogTitle>
           </div>
-          <DialogDescription className="text-left text-[13px] leading-relaxed">
+          <DialogDescription className="text-left text-13 leading-relaxed">
             {item.purpose}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-1">
           <div>
-            <p className="mb-2 text-[12px] font-medium text-muted-foreground">
+            <p className="mb-2 text-12 font-medium text-muted-foreground">
               They're requesting access to
             </p>
             <ScopeChips scope={item.scope} />
           </div>
 
           <div>
-            <p className="mb-2 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
-              <CalendarClock size={13} />
+            <p className="mb-2 flex items-center gap-1.5 text-12 font-medium text-muted-foreground">
+              <HugeiconsIcon icon={CalendarClockIcon} size={13} />
               Grant access for
             </p>
             <div className="flex gap-2">
@@ -600,7 +544,7 @@ function ApproveModal({
                   key={d}
                   onClick={() => setDays(d)}
                   style={fontMono}
-                  className={`flex-1 rounded-lg border py-2 text-[13px] font-medium transition-colors ${
+                  className={`flex-1 rounded-lg border py-2 text-13 font-medium transition-colors ${
                     days === d
                       ? "border-blue-600 bg-blue-600 text-white"
                       : "border-border text-muted-foreground hover:border-muted-foreground"
@@ -611,14 +555,14 @@ function ApproveModal({
               ))}
             </div>
             {days !== item.requestedDays && (
-              <p className="mt-2 text-[11px] text-muted-foreground">
+              <p className="mt-2 text-11 text-muted-foreground">
                 They asked for {item.requestedDays} days — you're granting{" "}
                 {days}.
               </p>
             )}
           </div>
 
-          <p className="rounded-lg bg-muted px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
+          <p className="rounded-lg bg-muted px-3 py-2 text-11 leading-relaxed text-muted-foreground">
             You can revoke this at any time before it expires. They'll be
             notified once you approve.
           </p>
@@ -636,7 +580,7 @@ function ApproveModal({
             onClick={() => onConfirm(item, days)}
             className="gap-1.5 bg-blue-600 hover:bg-blue-700"
           >
-            <Check size={14} strokeWidth={2.25} />
+            <HugeiconsIcon icon={CheckIcon} size={14} strokeWidth={2.25} />
             Grant {days}-day access
           </Button>
         </DialogFooter>
@@ -741,7 +685,7 @@ function DetailsModal({
         <DialogHeader>
           <div className="mb-1 flex items-center gap-3">
             <OrgIcon kind={item.kind} tone={isActive ? "primary" : "muted"} />
-            <DialogTitle style={fontDisplay} className="text-[18px]">
+            <DialogTitle style={fontDisplay} className="text-18">
               {item.org}
             </DialogTitle>
           </div>
@@ -749,17 +693,17 @@ function DetailsModal({
 
         <div className="space-y-4 py-1">
           <div>
-            <p className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
-              <Target size={13} />
+            <p className="mb-1.5 flex items-center gap-1.5 text-12 font-medium text-muted-foreground">
+              <HugeiconsIcon icon={Target01Icon} size={13} />
               Purpose
             </p>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
+            <p className="text-13 leading-relaxed text-muted-foreground">
               {detailText}
             </p>
           </div>
 
           <div>
-            <p className="mb-2 text-[12px] font-medium text-muted-foreground">
+            <p className="mb-2 text-12 font-medium text-muted-foreground">
               Data shared
             </p>
             <ScopeChips scope={item.scope} />
@@ -768,12 +712,12 @@ function DetailsModal({
           {isActive ? (
             <div className="flex items-center justify-between rounded-lg bg-muted px-3 py-2.5">
               <div>
-                <p className="text-[12px] font-medium text-muted-foreground">
+                <p className="text-12 font-medium text-muted-foreground">
                   Time remaining
                 </p>
                 <p
                   style={fontMono}
-                  className="text-[11px] text-muted-foreground"
+                  className="text-11 text-muted-foreground"
                 >
                   Granted {item.grantedAt} · {item.totalDays}-day term
                 </p>
@@ -786,7 +730,7 @@ function DetailsModal({
             </div>
           ) : (
             <div className="rounded-lg bg-muted px-3 py-2.5">
-              <p className="text-[12px] font-medium text-muted-foreground">
+              <p className="text-12 font-medium text-muted-foreground">
                 {HISTORY_LABEL[item.status]} {item.resolvedAt}
               </p>
             </div>
@@ -810,7 +754,7 @@ function DetailsModal({
               variant="outline"
               className="gap-1.5 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
-              <ShieldOff size={14} />
+              <HugeiconsIcon icon={ShieldMinusIcon} size={14} />
               Revoke access
             </Button>
           )}
@@ -821,7 +765,6 @@ function DetailsModal({
 }
 
 export default function ConsentsPage() {
-  const navigate = useNavigate();
   const [pending, setPending] = useState<PendingConsent[]>(initialPending);
   const [active, setActive] = useState<ActiveConsent[]>(initialActive);
   const [history, setHistory] = useState<HistoryConsent[]>(initialHistory);
@@ -835,17 +778,7 @@ export default function ConsentsPage() {
   const [revokeTarget, setRevokeTarget] = useState<ActiveConsent | null>(null);
   const [detailsTarget, setDetailsTarget] = useState<DetailsItem | null>(null);
 
-  const [toast, setToast] = useState<ToastState>(null);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function fireToast(message: string, tone = "positive") {
-    setToast({ message, tone });
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 3200);
-  }
-  useEffect(() => () => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-  }, []);
+  const { toast, fireToast } = useToast();
 
   function handleApprove(item: PendingConsent, days: number) {
     setPending((prev) => prev.filter((p) => p.id !== item.id));
@@ -894,47 +827,30 @@ export default function ConsentsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-5">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
-          >
-            <ArrowLeft size={16} />
-          </button>
-          <div>
-            <h1
-              style={fontDisplay}
-              className="text-[19px] font-semibold text-foreground"
-            >
-              Consents
-            </h1>
-            <p className="text-[12.5px] text-muted-foreground">
-              Manage who can see your health records, and for how long
-            </p>
-          </div>
-        </div>
-      </header>
+      <TopBar
+        title="Consents"
+        subtitle="Manage who can see your health records, and for how long"
+      />
 
       <main className="mx-auto max-w-7xl space-y-5 px-5 py-6">
         <div className="grid grid-cols-3 gap-3">
           <StatCard
-            icon={Hourglass}
+            icon={HourglassIcon}
             count={pending.length}
             label="Pending"
-            tone="primary"
+            tone="pending"
           />
           <StatCard
-            icon={ShieldCheck}
+            icon={SecurityCheckIcon}
             count={active.length}
             label="Active"
-            tone="primary"
+            tone="approved"
           />
           <StatCard
             icon={HistoryIcon}
             count={history.length}
             label="Past"
-            tone="muted"
+            tone="neutral"
           />
         </div>
 
@@ -944,7 +860,7 @@ export default function ConsentsPage() {
         >
           {pending.length === 0 ? (
             <EmptyState
-              icon={Hourglass}
+              icon={HourglassIcon}
               label="No pending requests right now."
             />
           ) : (
@@ -963,7 +879,7 @@ export default function ConsentsPage() {
         <SectionCard title="Active consents">
           {active.length === 0 ? (
             <EmptyState
-              icon={ShieldCheck}
+              icon={SecurityCheckIcon}
               label="You haven't granted anyone access yet."
             />
           ) : (

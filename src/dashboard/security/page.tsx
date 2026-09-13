@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -14,12 +12,11 @@ import {
   QrCodeIcon,
   ViewIcon,
 } from "@hugeicons/core-free-icons";
+import { kvColors } from "../../lib/kv-colors";
 
 // Local design tokens matching Karevo ecosystem metrics
 const c = {
-  signal: "#3452D9",
-  verify: "#1C8C74",
-  danger: "#DF4949",
+  ...kvColors,
   seal: "#232B4D", // deep ink-indigo used only for the seal emblem
 };
 
@@ -114,7 +111,7 @@ export default function SafeguardPage() {
         <header className="mb-14 flex items-start justify-between">
           <Link
             to="/dashboard/home"
-            className="group flex items-center gap-2 text-[13px] font-medium"
+            className="group flex items-center gap-2 text-13 font-medium"
             style={{ color: "var(--kv-ink-soft)" }}
           >
             <HugeiconsIcon icon={ArrowLeft01Icon} size={15} />
@@ -124,7 +121,7 @@ export default function SafeguardPage() {
           </Link>
 
           <span
-            className="kv-body text-[11px] uppercase tracking-[0.2em]"
+            className="kv-body text-11 uppercase tracking-[0.2em]"
             style={{ color: "var(--kv-ink-soft)" }}
           >
             Security Center
@@ -135,13 +132,13 @@ export default function SafeguardPage() {
         <section className="mb-16 flex flex-col-reverse items-start gap-10 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-xl">
             <h1
-              className="kv-display text-[32px] font-normal leading-[1.15] tracking-tight sm:text-[38px]"
+              className="kv-display text-32 font-normal leading-[1.15] tracking-tight sm:text-38"
               style={{ color: "var(--kv-ink)" }}
             >
               Safeguard your digital identity
             </h1>
             <p
-              className="kv-body mt-5 text-[14.5px] leading-relaxed"
+              className="kv-body mt-5 text-15 leading-relaxed"
               style={{ color: "var(--kv-ink-soft)" }}
             >
               A compromised health record does not just leak metrics it
@@ -212,7 +209,7 @@ export default function SafeguardPage() {
               </div>
             </div>
             <span
-              className="kv-body text-[10.5px] uppercase tracking-[0.18em]"
+              className="kv-body text-10 uppercase tracking-[0.18em]"
               style={{ color: "var(--kv-ink-soft)" }}
             >
               Protected
@@ -230,7 +227,7 @@ export default function SafeguardPage() {
           {/* PRACTICES */}
           <div className="lg:col-span-3">
             <h3
-              className="kv-body mb-6 text-[11px] uppercase tracking-[0.18em]"
+              className="kv-body mb-6 text-11 uppercase tracking-[0.18em]"
               style={{ color: "var(--kv-ink-soft)" }}
             >
               Core Protective Parameters
@@ -252,13 +249,13 @@ export default function SafeguardPage() {
                   />
                   <div>
                     <h4
-                      className="kv-display text-[14.5px] font-medium"
+                      className="kv-display text-15 font-medium"
                       style={{ color: "var(--kv-ink)" }}
                     >
                       {item.title}
                     </h4>
                     <p
-                      className="kv-body mt-1.5 text-[13px] leading-relaxed"
+                      className="kv-body mt-1.5 text-13 leading-relaxed"
                       style={{ color: "var(--kv-ink-soft)" }}
                     >
                       {item.desc}
@@ -273,7 +270,7 @@ export default function SafeguardPage() {
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between">
               <h3
-                className="kv-body text-[11px] uppercase tracking-[0.18em]"
+                className="kv-body text-11 uppercase tracking-[0.18em]"
                 style={{ color: "var(--kv-ink-soft)" }}
               >
                 Recent Security Actions
@@ -303,7 +300,7 @@ export default function SafeguardPage() {
                     className="mb-2 text-slate-400"
                   />
                   <p
-                    className="kv-body text-[13px]"
+                    className="kv-body text-13"
                     style={{ color: "var(--kv-ink-soft)" }}
                   >
                     No recent events logged
@@ -329,19 +326,19 @@ export default function SafeguardPage() {
                       />
                       <div className="flex-1">
                         <span
-                          className="kv-display block text-[13.5px] font-medium"
+                          className="kv-display block text-14 font-medium"
                           style={{ color: "var(--kv-ink)" }}
                         >
                           {log.event}
                         </span>
                         <span
-                          className="kv-body mt-0.5 block text-[12px]"
+                          className="kv-body mt-0.5 block text-12"
                           style={{ color: "var(--kv-ink-soft)" }}
                         >
                           {log.device} · {log.location}
                         </span>
                         <span
-                          className="kv-body mt-1 block text-[11px]"
+                          className="kv-body mt-1 block text-11"
                           style={{ color: "var(--kv-ink-soft)" }}
                         >
                           {log.time}
@@ -361,7 +358,7 @@ export default function SafeguardPage() {
             <div className="flex flex-col gap-3">
               <Link
                 to="/dashboard/consents"
-                className="group flex items-center justify-between border-b py-3 text-[13.5px] font-medium transition-colors"
+                className="group flex items-center justify-between border-b py-3 text-14 font-medium transition-colors"
                 style={{
                   borderColor: "var(--kv-card-border)",
                   color: "var(--kv-ink)",
@@ -377,7 +374,7 @@ export default function SafeguardPage() {
 
               <button
                 type="button"
-                className="flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-[13.5px] font-medium text-white transition-opacity hover:opacity-90"
+                className="flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-14 font-medium text-white transition-opacity hover:opacity-90"
                 style={{ background: c.seal }}
                 onClick={() =>
                   alert("Deep-linking sequence to app settings framework.")

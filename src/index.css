@@ -42,6 +42,12 @@
   --kv-ink-soft: #63697a;
   --kv-chip-bg: rgba(52, 82, 217, 0.08);
   --kv-chip-fg: #3452d9;
+  /* Fixed brand-blue accent that does not re-theme in dark mode
+     (matches src/lib/kv-colors.ts's `signal`). */
+  --kv-signal: #3452d9;
+  /* Karevo logo-mark indigo, used on the auth pages (login hero, focus
+     rings). Mirrors the KAREVO_BRAND constant in login/page.tsx. */
+  --kv-brand: #3b00c5;
   --kv-more-bg: rgba(16, 21, 28, 0.04);
   --kv-more-fg: #63697a;
   --kv-more-bg-hover: rgba(16, 21, 28, 0.07);
@@ -135,5 +141,45 @@ body {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* Home ledger cards: sheen sweep + live-dot pulse */
+@keyframes kv-sheen {
+  0% {
+    transform: translateY(-140%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(160%);
+    opacity: 0;
+  }
+}
+@keyframes kv-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+.kv-sheen {
+  animation: kv-sheen 5s ease-in-out infinite;
+}
+.kv-live-dot {
+  animation: kv-pulse 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kv-sheen,
+  .kv-live-dot {
+    animation: none !important;
   }
 }

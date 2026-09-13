@@ -295,7 +295,7 @@ function TourOverlay({
           key={step.id}
           ref={cardRef}
           className={cn(
-            "pointer-events-auto w-80 max-w-[calc(100vw-2rem)] rounded-3xl border border-cloud bg-white p-5 shadow-2xl dark:bg-[#141927]",
+            "pointer-events-auto w-80 max-w-[calc(100vw-2rem)] rounded-3xl border border-cloud bg-white p-5 shadow-2xl dark:bg-[color:var(--kv-card-bg)]",
             centered ? "animate-[tourIn_0.25s_ease-out]" : "absolute",
           )}
           style={
@@ -313,12 +313,12 @@ function TourOverlay({
               {step.title}
             </h2>
             {spotNumber > 0 && (
-              <span className="shrink-0 rounded-full bg-cloud px-2 py-0.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+              <span className="shrink-0 rounded-full bg-cloud px-2 py-0.5 text-11 font-semibold text-blue-600 dark:text-blue-400">
                 {spotNumber} of {spotSteps.length}
               </span>
             )}
           </div>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-ink-soft">
+          <p className="mt-1.5 text-13 leading-relaxed text-ink-soft">
             {step.body}
           </p>
 

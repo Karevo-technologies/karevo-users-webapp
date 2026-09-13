@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -73,9 +71,9 @@ export default function ThemeToggle() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-[220px] overflow-hidden rounded-2xl border border-cloud bg-white shadow-xl dark:bg-[#141927]">
+        <div className="absolute right-0 mt-2 w-[220px] overflow-hidden rounded-2xl border border-cloud bg-white shadow-xl dark:bg-[color:var(--kv-card-bg)]">
           <div className="border-b border-cloud px-4 py-3">
-            <span className="text-[13px] font-semibold text-ink">
+            <span className="text-13 font-semibold text-ink">
               Appearance
             </span>
           </div>
@@ -87,7 +85,7 @@ export default function ThemeToggle() {
                   key={opt.value}
                   type="button"
                   onClick={() => select(opt.value)}
-                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] transition-colors ${
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-13 transition-colors ${
                     active
                       ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                       : "text-ink hover:bg-paper/60"

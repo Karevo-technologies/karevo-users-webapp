@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -123,23 +121,23 @@ export default function TopBar({
           >
             <HugeiconsIcon icon={BellIcon} size={18} strokeWidth={1.75} />
             {unreadCount > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-bold text-white">
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-10 font-bold text-white">
                 {unreadCount}
               </span>
             )}
           </button>
 
           {notifsOpen && (
-            <div className="absolute right-0 mt-2 w-[320px] overflow-hidden rounded-2xl border border-cloud bg-white shadow-xl dark:bg-[#141927]">
+            <div className="absolute right-0 mt-2 w-[320px] overflow-hidden rounded-2xl border border-cloud bg-white shadow-xl dark:bg-[color:var(--kv-card-bg)]">
               <div className="flex items-center justify-between border-b border-cloud px-4 py-3">
-                <span className="text-[13px] font-semibold text-ink">
+                <span className="text-13 font-semibold text-ink">
                   Notifications
                 </span>
                 {unreadCount > 0 && (
                   <button
                     type="button"
                     onClick={markAllRead}
-                    className="text-[11.5px] font-medium text-blue-600 hover:underline dark:text-blue-400"
+                    className="text-11 font-medium text-blue-600 hover:underline dark:text-blue-400"
                   >
                     Mark all as read
                   </button>
@@ -147,7 +145,7 @@ export default function TopBar({
               </div>
               <div className="max-h-[320px] overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <p className="px-4 py-8 text-center text-[12.5px] text-ink-soft">
+                  <p className="px-4 py-8 text-center text-13 text-ink-soft">
                     You're all caught up.
                   </p>
                 ) : (
@@ -163,17 +161,17 @@ export default function TopBar({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="truncate text-[12.5px] font-semibold text-ink">
+                          <p className="truncate text-13 font-semibold text-ink">
                             {n.title}
                           </p>
                           {n.unread && (
                             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                           )}
                         </div>
-                        <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-ink-soft">
+                        <p className="mt-0.5 line-clamp-2 text-11 leading-snug text-ink-soft">
                           {n.body}
                         </p>
-                        <p className="mt-1 text-[10.5px] text-ink-soft/70">
+                        <p className="mt-1 text-10 text-ink-soft/70">
                           {n.time}
                         </p>
                       </div>
@@ -204,12 +202,12 @@ export default function TopBar({
           </button>
 
           {profileOpen && (
-            <div className="absolute right-0 mt-2 w-[240px] overflow-hidden rounded-2xl border border-cloud bg-white shadow-xl dark:bg-[#141927]">
+            <div className="absolute right-0 mt-2 w-[240px] overflow-hidden rounded-2xl border border-cloud bg-white shadow-xl dark:bg-[color:var(--kv-card-bg)]">
               <div className="border-b border-cloud px-4 py-3">
-                <p className="truncate text-[13.5px] font-semibold text-ink">
+                <p className="truncate text-14 font-semibold text-ink">
                   {user?.name ?? "User"}
                 </p>
-                <p className="truncate text-[11.5px] text-ink-soft">
+                <p className="truncate text-11 text-ink-soft">
                   {user?.email ?? ""}
                 </p>
               </div>
@@ -220,7 +218,7 @@ export default function TopBar({
                     setProfileOpen(false);
                     navigate("/dashboard/profile");
                   }}
-                  className="flex w-full items-center gap-2.5 px-4 py-2 text-[13px] text-ink transition-colors hover:bg-paper/60"
+                  className="flex w-full items-center gap-2.5 px-4 py-2 text-13 text-ink transition-colors hover:bg-paper/60"
                 >
                   <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={1.75} />
                   View Profile
@@ -231,7 +229,7 @@ export default function TopBar({
                     setProfileOpen(false);
                     navigate("/dashboard/settings");
                   }}
-                  className="flex w-full items-center gap-2.5 px-4 py-2 text-[13px] text-ink transition-colors hover:bg-paper/60"
+                  className="flex w-full items-center gap-2.5 px-4 py-2 text-13 text-ink transition-colors hover:bg-paper/60"
                 >
                   <HugeiconsIcon icon={Setting07Icon} size={16} strokeWidth={1.75} />
                   Settings
@@ -245,7 +243,7 @@ export default function TopBar({
                     logout();
                     navigate("/login");
                   }}
-                  className="flex w-full items-center gap-2.5 px-4 py-2 text-[13px] text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                  className="flex w-full items-center gap-2.5 px-4 py-2 text-13 text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
                 >
                   <HugeiconsIcon icon={Logout03Icon} size={16} strokeWidth={1.75} />
                   Log out

@@ -47,6 +47,28 @@ module.exports = {
           soft: "hsl(var(--ink-soft) / <alpha-value>)",
         },
       },
+      fontSize: {
+        // Consolidated from ~23 ad hoc text-[Npx] values scattered across
+        // dashboard pages into one named scale. Deliberately not named
+        // xs/sm/base/... — those keys are Tailwind's default rem-based
+        // scale and are already used elsewhere in this app; reusing them
+        // here would silently change those too. No bundled line-height,
+        // so each usage's existing leading-* class keeps behaving as before.
+        5: "5px",
+        8: "8px",
+        10: "10px",
+        11: "11px",
+        12: "12px",
+        13: "13px",
+        14: "14px",
+        15: "15px",
+        16: "16px",
+        17: "17px",
+        18: "18px",
+        32: "32px",
+        38: "38px",
+        64: "64px",
+      },
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
         display: [
