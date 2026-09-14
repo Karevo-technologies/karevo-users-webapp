@@ -8,12 +8,14 @@ import {
   CheckmarkCircle02Icon,
   Alert01Icon,
   EyeIcon,
+  QrCodeIcon,
 } from "@hugeicons/core-free-icons";
 import { useAuth } from "../../context/AuthContext";
 import { StatCard } from "./StatCard";
 import type { StatTone } from "./stat-tone";
 import { QuickActionCard } from "./QuickActionCard";
 import { ActivityPanel } from "./ActivityPanel";
+import { KarevoIdCard } from "./KarevoIdCard";
 
 const fontDisplay = {
   fontFamily: "'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif",
@@ -88,26 +90,37 @@ export default function DashboardHome() {
         ))}
       </div>
 
-      {/* Quick actions */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <QuickActionCard
-          icon={MedicalFileIcon}
-          title="View Records"
-          subtitle="See your uploaded health records"
-          onClick={() => navigate("/dashboard/records")}
-        />
-        <QuickActionCard
-          icon={FileValidationIcon}
-          title="Consent Requests"
-          subtitle="Review who has access to your data"
-          onClick={() => navigate("/dashboard/consents")}
-        />
-        <QuickActionCard
-          icon={Shield01Icon}
-          title="Security Center"
-          subtitle="Manage your account protection"
-          onClick={() => navigate("/dashboard/security")}
-        />
+      {/* Karevo ID card + quick actions */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-1">
+          <KarevoIdCard />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2">
+          <QuickActionCard
+            icon={MedicalFileIcon}
+            title="View Records"
+            subtitle="See your uploaded health records"
+            onClick={() => navigate("/dashboard/records")}
+          />
+          <QuickActionCard
+            icon={FileValidationIcon}
+            title="Consent Requests"
+            subtitle="Review who has access to your data"
+            onClick={() => navigate("/dashboard/consents")}
+          />
+          <QuickActionCard
+            icon={QrCodeIcon}
+            title="Scan a QR Code"
+            subtitle="Share your identity data with a scan"
+            onClick={() => navigate("/dashboard/scan")}
+          />
+          <QuickActionCard
+            icon={Shield01Icon}
+            title="Security Center"
+            subtitle="Manage your account protection"
+            onClick={() => navigate("/dashboard/security")}
+          />
+        </div>
       </div>
 
       {/* Activity panels */}
