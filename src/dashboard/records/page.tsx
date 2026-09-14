@@ -8,18 +8,8 @@ import {
   PillIcon,
   File01Icon,
   EyeIcon,
-  CalendarClockIcon,
-  LockIcon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import {
   mockPatientRecords,
   type PatientRecord,
@@ -134,88 +124,6 @@ function RecordCard({
   );
 }
 
-function RecordModal({
-  record,
-  open,
-  onOpenChange,
-}: {
-  record: PatientRecord | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  if (!record) return null;
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[440px]">
-        <DialogHeader>
-          <div className="mb-1 flex items-center gap-3">
-            <RecordIcon type={record.type} />
-            <DialogTitle style={fontDisplay} className="text-18">
-              {record.type}
-            </DialogTitle>
-          </div>
-          <DialogDescription className="text-left text-13">
-            Issued by {record.issuedBy}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4 py-1">
-          <div>
-            <p className="mb-1.5 flex items-center gap-1.5 text-12 font-medium text-muted-foreground">
-              <HugeiconsIcon icon={CalendarClockIcon} size={13} />
-              Date issued
-            </p>
-            <p style={fontMono} className="text-13 text-foreground">
-              {formatDate(record.issuedDate)}
-            </p>
-          </div>
-
-          <div>
-            <p className="mb-1.5 text-12 font-medium text-muted-foreground">
-              Summary
-            </p>
-            <p className="text-13 leading-relaxed text-foreground">
-              {record.summary}
-            </p>
-          </div>
-
-          <div>
-            <p className="mb-1.5 text-12 font-medium text-muted-foreground">
-              Details
-            </p>
-            <p className="text-13 leading-relaxed text-muted-foreground">
-              {record.details}
-            </p>
-          </div>
-
-          <div className="flex items-start gap-2.5 rounded-lg bg-muted px-3 py-2.5">
-            <HugeiconsIcon icon={LockIcon} size={14} strokeWidth={2} className="mt-0.5 shrink-0 text-muted-foreground" />
-            <div>
-              <p className="text-12 font-semibold text-foreground">
-                View Only
-              </p>
-              <p className="mt-0.5 text-11 leading-relaxed text-muted-foreground">
-                This record cannot be edited or downloaded.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <DialogFooter className="gap-2 sm:gap-2">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="border-border"
-          >
-            Close
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 /* ---------------------------------------------------------------------- */
 /* Page                                                                   */
 /* ---------------------------------------------------------------------- */
@@ -224,7 +132,6 @@ export default function PatientRecordsPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<PatientRecord[]>([]);
-  const [selected, setSelected] = useState<PatientRecord | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -274,18 +181,12 @@ export default function PatientRecordsPage() {
               <RecordCard
                 key={record.id}
                 record={record}
-                onView={setSelected}
+                onView={(r) => navigate(`/dashboard/records/${r.id}`)}
               />
             ))}
           </div>
         )}
       </main>
-
-      <RecordModal
-        record={selected}
-        open={!!selected}
-        onOpenChange={(o) => !o && setSelected(null)}
-      />
     </div>
   );
 }
