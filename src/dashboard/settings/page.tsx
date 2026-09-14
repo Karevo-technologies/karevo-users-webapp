@@ -2,34 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Activity,
-  Bell,
-  Link2,
-  WifiOff,
-  Lock,
-  KeyRound,
-  Smartphone,
-  Clock,
-  Shield,
-  FileCheck2,
-  RotateCcw,
-  Info,
-  ChevronRight,
-  Eye,
-  EyeOff,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Laptop,
-  X,
-} from "lucide-react";
   Activity01Icon,
   BellIcon,
   Link01Icon,
   WifiOff01Icon,
   LockIcon,
   Key01Icon,
-  FingerPrintIcon,
   SmartPhone01Icon,
   Clock01Icon,
   Shield01Icon,
@@ -837,13 +815,6 @@ export default function SettingsPage() {
       control: (
         <Switch checked={ninLock} onCheckedChange={handleNinLockToggle} />
       ),
-    },
-    {
-      type: "toggle",
-      icon: FingerPrintIcon,
-      title: "Biometrics",
-      description: "Use fingerprint or face ID for quick access and approvals",
-      control: <Switch checked={biometrics} onCheckedChange={setBiometrics} />,
     },
     {
       type: "static",
