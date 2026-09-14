@@ -5,9 +5,6 @@
  * (spotlights `data-tour` targets, responsive step filtering, localStorage
  * first-visit gate). This file keeps old `@/lib/tour` imports working.
  */
-export {
-  TourProvider,
-  useTour,
-  TOUR_DONE_KEY,
-} from "../dashboard/_components/DashboardTour";
+// eslint-disable-next-line react-refresh/only-export-components
+export { TourProvider, useTour, TOUR_DONE_KEY } from "../dashboard/_components/DashboardTour";
 

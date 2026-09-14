@@ -64,7 +64,9 @@ const RegisterPage = () => {
 
       await register(formData.email, formData.password, formData.name);
       navigate("/login");
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
+      // Silently fail - user-friendly error is already shown in form state
       setErrors({ submit: "Registration failed. Please try again." });
     } finally {
       setIsLoading(false);

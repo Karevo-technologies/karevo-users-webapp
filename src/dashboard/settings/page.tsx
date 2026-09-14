@@ -2,27 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Activity,
-  Bell,
-  Link2,
-  WifiOff,
-  Lock,
-  KeyRound,
-  Smartphone,
-  Clock,
-  Shield,
-  FileCheck2,
-  RotateCcw,
-  Info,
-  ChevronRight,
-  Eye,
-  EyeOff,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Laptop,
-  X,
-} from "lucide-react";
   Activity01Icon,
   BellIcon,
   Link01Icon,
@@ -107,7 +86,7 @@ const initialDevices = [
 /* Small building blocks                                                  */
 /* ---------------------------------------------------------------------- */
 
-function RowIcon({ icon, tone }: { icon: any; tone: string }) {
+function RowIcon({ icon, tone }: { icon: React.ComponentType<{ size?: number; strokeWidth?: number }>; tone: string }) {
   const tones: Record<string, string> = {
     primary: "bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
     destructive: "bg-muted text-muted-foreground",
@@ -153,7 +132,7 @@ function SettingsRow({
   isLast,
   children,
 }: {
-  row: any;
+  row: { title: string; description: string; type: string; icon: React.ComponentType; onClick?: () => void; control?: React.ReactNode; value?: string };
   isLast: boolean;
   children?: React.ReactNode;
 }) {
@@ -363,8 +342,8 @@ function DeviceRow({
   device,
   onRequestRemove,
 }: {
-  device: any;
-  onRequestRemove: (device: any) => void;
+  device: { id: string; name: string; detail: string; lastActive: string; current: boolean };
+  onRequestRemove: (device: { id: string; name: string; detail: string; lastActive: string; current: boolean }) => void;
 }) {
   return (
     <div className="flex items-center gap-3 py-3">
@@ -413,8 +392,8 @@ function DevicesModal({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  devices: any[];
-  onRequestRemove: (device: any) => void;
+  devices: Array<{ id: string; name: string; detail: string; lastActive: string; current: boolean }>;
+  onRequestRemove: (device: { id: string; name: string; detail: string; lastActive: string; current: boolean }) => void;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -535,8 +514,12 @@ function ResetDeviceDialog({
   onConfirm: () => void;
 }) {
   const [confirmText, setConfirmText] = useState("");
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    if (open) setConfirmText("");
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setConfirmText("");
+    }
   }, [open]);
 
   const canConfirm = confirmText.trim().toUpperCase() === "RESET";

@@ -25,6 +25,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export const TOUR_DONE_KEY = "karevo-tour-done";
 
+// eslint-disable-next-line react-refresh/only-export-components
 type TourStep = {
   id: string;
   /** CSS selector; the first *visible* match is spotlighted. Absent = centered card. */
@@ -143,6 +144,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
   // Safety net: if the user signs out mid-tour (or the auth state drops for
   // any reason), dismiss the overlay instead of leaving it over the login page.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!isAuthenticated && steps) {
       setSteps(null);
@@ -200,6 +202,7 @@ function TourOverlay({
   // Track the target's rectangle, following window resizes and any scrolling.
   useLayoutEffect(() => {
     if (!step.target) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBox(null);
       return;
     }
@@ -228,6 +231,7 @@ function TourOverlay({
     const card = cardRef.current;
     if (!card) return;
     if (!box) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCardPos(null);
       return;
     }

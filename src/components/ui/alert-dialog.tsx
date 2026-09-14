@@ -20,19 +20,19 @@ export function AlertDialog(props: {
   return <>{props.children}</>;
 }
 
-export function AlertDialogTrigger(_props: any) {
+export function AlertDialogTrigger() {
   return null;
 }
 
-export function AlertDialogPortal(props: any) {
+export function AlertDialogPortal(props: { children?: React.ReactNode }) {
   return <>{props.children}</>;
 }
 
-export function AlertDialogClose(_props: any) {
+export function AlertDialogClose() {
   return null;
 }
 
-export function AlertDialogOverlay(_props: any) {
+export function AlertDialogOverlay() {
   return null;
 }
 

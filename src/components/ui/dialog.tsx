@@ -18,7 +18,7 @@ export function Dialog(props: {
   return <>{props.children}</>;
 }
 
-export function DialogTrigger(_props: Record<string, unknown>) {
+export function DialogTrigger() {
   return null;
 }
 
@@ -26,7 +26,7 @@ export function DialogPortal(props: { children?: React.ReactNode }) {
   return <>{props.children}</>;
 }
 
-export function DialogOverlay(_props: Record<string, unknown>) {
+export function DialogOverlay() {
   return null;
 }
 

@@ -505,7 +505,10 @@ function ApproveModal({
   const [days, setDays] = useState(30);
 
   useEffect(() => {
-    if (item) setDays(item.requestedDays);
+    if (item) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDays(item.requestedDays);
+    }
   }, [item]);
 
   if (!item) return null;

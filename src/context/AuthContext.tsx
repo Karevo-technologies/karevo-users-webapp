@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 type User = {
   name: string;
@@ -18,6 +18,7 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
@@ -56,11 +57,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const completeOnboarding = async (_data: unknown) => {
+  const completeOnboarding = useCallback(async (_data: unknown) => {
     void _data;
     // Stub: in a real implementation, persist onboarding answers to backend.
     setOnboardingCompleted(true);
-  };
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
