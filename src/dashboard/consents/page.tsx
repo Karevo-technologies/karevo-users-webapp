@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect } from "react";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import {
   Building02Icon,
@@ -20,6 +20,7 @@ import { useToast } from "../_components/use-toast";
 import TopBar from "../_components/topbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -272,36 +273,9 @@ function CountdownRing({
   );
 }
 
-function SectionCard({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle?: string | null;
-  children: ReactNode;
-}) {
-  return (
-    <section className="rounded-2xl border border-border bg-card">
-      <div className="flex items-baseline justify-between gap-3 border-b border-border px-5 py-4">
-        <h2
-          className="text-15 font-semibold text-foreground"
-          style={fontDisplay}
-        >
-          {title}
-        </h2>
-        {subtitle && (
-          <span className="text-12 text-muted-foreground">{subtitle}</span>
-        )}
-      </div>
-      <div className="px-5">{children}</div>
-    </section>
-  );
-}
-
 function EmptyState({ icon, label }: { icon: IconSvgElement; label: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+    <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-14 text-center">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
         <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} />
       </div>
@@ -310,39 +284,17 @@ function EmptyState({ icon, label }: { icon: IconSvgElement; label: string }) {
   );
 }
 
-/* Timeline row wrapper — a left connector rail makes sense here because
-   every list on this page genuinely is a chronological sequence of
-   consent events, not a decorative numbering scheme. */
-function TimelineRow({
-  children,
-  isLast,
-}: {
-  children: ReactNode;
-  isLast: boolean;
-}) {
-  return (
-    <div className="relative flex gap-4 py-4">
-      {!isLast && (
-        <span className="absolute left-[21px] top-[52px] bottom-[-16px] w-px bg-border" />
-      )}
-      {children}
-    </div>
-  );
-}
-
-function PendingRow({
+function PendingCard({
   item,
-  isLast,
   onOpenApprove,
   onOpenDecline,
 }: {
   item: PendingConsent;
-  isLast: boolean;
   onOpenApprove: (item: PendingConsent) => void;
   onOpenDecline: (item: PendingConsent) => void;
 }) {
   return (
-    <TimelineRow isLast={isLast}>
+    <div className="flex gap-3.5 rounded-2xl border border-border bg-card p-4 sm:p-5">
       <OrgIcon kind={item.kind} tone="primary" />
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
@@ -380,23 +332,21 @@ function PendingRow({
           </Button>
         </div>
       </div>
-    </TimelineRow>
+    </div>
   );
 }
 
-function ActiveRow({
+function ActiveCard({
   item,
-  isLast,
   onOpenDetails,
   onOpenRevoke,
 }: {
   item: ActiveConsent;
-  isLast: boolean;
   onOpenDetails: (item: ActiveConsent) => void;
   onOpenRevoke: (item: ActiveConsent) => void;
 }) {
   return (
-    <TimelineRow isLast={isLast}>
+    <div className="flex gap-3.5 rounded-2xl border border-border bg-card p-4 sm:p-5">
       <OrgIcon kind={item.kind} tone="primary" />
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
@@ -436,7 +386,7 @@ function ActiveRow({
           </Button>
         </div>
       </div>
-    </TimelineRow>
+    </div>
   );
 }
 
@@ -452,22 +402,20 @@ const HISTORY_LABEL: Record<HistoryStatus, string> = {
   declined: "Declined",
 };
 
-function HistoryRow({
+function HistoryCard({
   item,
-  isLast,
   onOpenDetails,
 }: {
   item: HistoryConsent;
-  isLast: boolean;
   onOpenDetails: (item: HistoryConsent) => void;
 }) {
   return (
-    <TimelineRow isLast={isLast}>
+    <button
+      onClick={() => onOpenDetails(item)}
+      className="flex w-full gap-3.5 rounded-2xl border border-border bg-card p-4 text-left transition-colors hover:bg-muted/60 sm:p-5"
+    >
       <OrgIcon kind={item.kind} tone="muted" />
-      <button
-        onClick={() => onOpenDetails(item)}
-        className="min-w-0 flex-1 text-left"
-      >
+      <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <p className="truncate text-14 font-medium text-muted-foreground">
             {item.org}
@@ -486,8 +434,8 @@ function HistoryRow({
           {HISTORY_LABEL[item.status]} {item.resolvedAt}
         </p>
         <ScopeChips scope={item.scope} />
-      </button>
-    </TimelineRow>
+      </div>
+    </button>
   );
 }
 
@@ -765,6 +713,7 @@ function DetailsModal({
 }
 
 export default function ConsentsPage() {
+  const [activeTab, setActiveTab] = useState("pending");
   const [pending, setPending] = useState<PendingConsent[]>(initialPending);
   const [active, setActive] = useState<ActiveConsent[]>(initialActive);
   const [history, setHistory] = useState<HistoryConsent[]>(initialHistory);
@@ -792,6 +741,7 @@ export default function ConsentsPage() {
       ...prev,
     ]);
     setApproveTarget(null);
+    setActiveTab("active");
     fireToast(`Approved ${item.org} for ${days} days`, "positive");
   }
 
@@ -807,6 +757,7 @@ export default function ConsentsPage() {
       ...prev,
     ]);
     setDeclineTarget(null);
+    setActiveTab("history");
     fireToast(`Declined ${item.org}`, "negative");
   }
 
@@ -822,6 +773,7 @@ export default function ConsentsPage() {
       ...prev,
     ]);
     setRevokeTarget(null);
+    setActiveTab("history");
     fireToast(`Revoked access for ${item.org}`, "negative");
   }
 
@@ -832,7 +784,7 @@ export default function ConsentsPage() {
         subtitle="Manage who can see your health records, and for how long"
       />
 
-      <main className="mx-auto max-w-7xl space-y-5 px-5 py-6">
+      <main className="mx-auto max-w-4xl space-y-6 px-5 py-6">
         <div className="grid grid-cols-3 gap-3">
           <StatCard
             icon={HourglassIcon}
@@ -854,64 +806,66 @@ export default function ConsentsPage() {
           />
         </div>
 
-        <SectionCard
-          title="Pending requests"
-          subtitle={pending.length ? `${pending.length} waiting on you` : null}
-        >
-          {pending.length === 0 ? (
-            <EmptyState
-              icon={HourglassIcon}
-              label="No pending requests right now."
-            />
-          ) : (
-            pending.map((item, i) => (
-              <PendingRow
-                key={item.id}
-                item={item}
-                isLast={i === pending.length - 1}
-                onOpenApprove={setApproveTarget}
-                onOpenDecline={setDeclineTarget}
-              />
-            ))
-          )}
-        </SectionCard>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="pending">Pending ({pending.length})</TabsTrigger>
+            <TabsTrigger value="active">Active ({active.length})</TabsTrigger>
+            <TabsTrigger value="history">History ({history.length})</TabsTrigger>
+          </TabsList>
 
-        <SectionCard title="Active consents">
-          {active.length === 0 ? (
-            <EmptyState
-              icon={SecurityCheckIcon}
-              label="You haven't granted anyone access yet."
-            />
-          ) : (
-            active.map((item, i) => (
-              <ActiveRow
-                key={item.id}
-                item={item}
-                isLast={i === active.length - 1}
-                onOpenDetails={setDetailsTarget}
-                onOpenRevoke={setRevokeTarget}
+          <TabsContent value="pending" className="space-y-3">
+            {pending.length === 0 ? (
+              <EmptyState
+                icon={HourglassIcon}
+                label="No pending requests right now."
               />
-            ))
-          )}
-        </SectionCard>
+            ) : (
+              pending.map((item) => (
+                <PendingCard
+                  key={item.id}
+                  item={item}
+                  onOpenApprove={setApproveTarget}
+                  onOpenDecline={setDeclineTarget}
+                />
+              ))
+            )}
+          </TabsContent>
 
-        <SectionCard title="History">
-          {history.length === 0 ? (
-            <EmptyState
-              icon={HistoryIcon}
-              label="Expired, declined, and revoked consents will show up here."
-            />
-          ) : (
-            history.map((item, i) => (
-              <HistoryRow
-                key={item.id}
-                item={item}
-                isLast={i === history.length - 1}
-                onOpenDetails={setDetailsTarget}
+          <TabsContent value="active" className="space-y-3">
+            {active.length === 0 ? (
+              <EmptyState
+                icon={SecurityCheckIcon}
+                label="You haven't granted anyone access yet."
               />
-            ))
-          )}
-        </SectionCard>
+            ) : (
+              active.map((item) => (
+                <ActiveCard
+                  key={item.id}
+                  item={item}
+                  onOpenDetails={setDetailsTarget}
+                  onOpenRevoke={setRevokeTarget}
+                />
+              ))
+            )}
+          </TabsContent>
+
+          <TabsContent value="history" className="space-y-3">
+            {history.length === 0 ? (
+              <EmptyState
+                icon={HistoryIcon}
+                label="Expired, declined, and revoked consents will show up here."
+              />
+            ) : (
+              history.map((item) => (
+                <HistoryCard
+                  key={item.id}
+                  item={item}
+                  onOpenDetails={setDetailsTarget}
+                />
+              ))
+            )}
+          </TabsContent>
+        </Tabs>
       </main>
 
       <ApproveModal
