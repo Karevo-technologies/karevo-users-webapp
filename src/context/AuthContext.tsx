@@ -3,14 +3,20 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 type User = {
   name: string;
   email: string;
+  nin: string;
   onboardingCompleted: boolean;
 };
 
 type AuthContextValue = {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  login: (email: string, password: string, nin: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    name: string,
+    nin: string,
+  ) => Promise<void>;
   logout: () => void;
   setOnboardingCompleted: (completed: boolean) => void;
   completeOnboarding: (data: unknown) => Promise<void>;
@@ -23,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isAuthenticated = !!user;
 
-  const login = async (email: string, _password: string) => {
+  const login = async (email: string, _password: string, nin: string) => {
     // NOTE: Stubbed auth for UI development.
     // Replace with real API calls.
     void _password;
@@ -34,16 +40,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ? nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
         : "User",
       email,
+      nin,
       // Onboarding page was deleted; default to completed.
       onboardingCompleted: true,
     });
   };
 
-  const register = async (email: string, _password: string, name: string) => {
+  const register = async (
+    email: string,
+    _password: string,
+    name: string,
+    nin: string,
+  ) => {
     // NOTE: Stubbed auth for UI development.
+    void _password;
     setUser({
       name,
       email,
+      nin,
       onboardingCompleted: true,
     });
   };

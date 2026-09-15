@@ -9,10 +9,12 @@ import {
   Mail01Icon,
   LockIcon,
   UserIcon,
+  IdentityCardIcon,
   AlertCircleIcon,
   CheckmarkCircle02Icon,
 } from "@hugeicons/core-free-icons";
 import logo from "../../assets/logo.png";
+import { NIN_LENGTH, isValidNin } from "../../lib/nin";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    nin: "",
     password: "",
     confirmPassword: "",
   });
@@ -37,6 +40,12 @@ const RegisterPage = () => {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email";
+    }
+
+    if (!formData.nin) {
+      newErrors.nin = "NIN is required";
+    } else if (!isValidNin(formData.nin)) {
+      newErrors.nin = `NIN must be exactly ${NIN_LENGTH} digits`;
     }
 
     if (!formData.password) {
@@ -62,7 +71,12 @@ const RegisterPage = () => {
         return;
       }
 
-      await register(formData.email, formData.password, formData.name);
+      await register(
+        formData.email,
+        formData.password,
+        formData.name,
+        formData.nin,
+      );
       navigate("/login");
     } catch (err) {
       setErrors({ submit: "Registration failed. Please try again." });
@@ -162,6 +176,36 @@ const RegisterPage = () => {
               </div>
               {errors.email && (
                 <p className="text-xs font-medium text-rose-600 dark:text-rose-400 pl-1">{errors.email}</p>
+              )}
+            </div>
+
+            {/* NIN Input Framework */}
+            <div className="space-y-2">
+              <label htmlFor="nin" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                National Identification Number (NIN)
+              </label>
+              <div className="relative group">
+                <HugeiconsIcon icon={IdentityCardIcon} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <Input
+                  id="nin"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  maxLength={NIN_LENGTH}
+                  placeholder="12345678901"
+                  value={formData.nin}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      nin: e.target.value.replace(/\D/g, ""),
+                    })
+                  }
+                  className="pl-11 pr-4 py-6 text-sm bg-slate-50/50 dark:bg-slate-950/40 border-slate-200 dark:border-slate-800 rounded-xl focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 transition-all"
+                  disabled={isLoading}
+                />
+              </div>
+              {errors.nin && (
+                <p className="text-xs font-medium text-rose-600 dark:text-rose-400 pl-1">{errors.nin}</p>
               )}
             </div>
 
