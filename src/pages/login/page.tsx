@@ -10,11 +10,13 @@ import {
   CheckIcon,
   EyeIcon,
   EyeOffIcon,
+  IdentityCardIcon,
   LockIcon,
   Mail01Icon,
   SecurityCheckIcon,
 } from "@hugeicons/core-free-icons";
 import logo from "../../assets/logo.png";
+import { NIN_LENGTH, isValidNin } from "../../lib/nin";
 
 const KAREVO_BRAND = "#3B00C5";
 
@@ -29,6 +31,7 @@ const LoginPage = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nin, setNin] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -37,8 +40,8 @@ const LoginPage = () => {
     e.preventDefault();
     setError("");
 
-    if (!email.trim() && !password) {
-      setError("Enter your email address and password.");
+    if (!email.trim() && !password && !nin.trim()) {
+      setError("Enter your email address, password, and NIN.");
       return;
     }
 
@@ -52,6 +55,16 @@ const LoginPage = () => {
       return;
     }
 
+    if (!nin.trim()) {
+      setError("Enter your National Identification Number (NIN).");
+      return;
+    }
+
+    if (!isValidNin(nin)) {
+      setError(`Enter a valid ${NIN_LENGTH}-digit NIN.`);
+      return;
+    }
+
     if (!password) {
       setError("Enter your password to sign in.");
       return;
@@ -60,7 +73,7 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      await login(email, password);
+      await login(email, password, nin);
       navigate("/dashboard");
     } catch {
       setError(
@@ -162,6 +175,33 @@ const LoginPage = () => {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
+                    aria-invalid={Boolean(error)}
+                    className="h-[52px] rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus-visible:border-[color:var(--kv-brand)] focus-visible:ring-[color:var(--kv-brand)]/20"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="nin" className="text-sm font-semibold text-slate-800">
+                  National Identification Number (NIN)
+                </label>
+                <div className="relative">
+                  <HugeiconsIcon
+                    icon={IdentityCardIcon}
+                    size={20}
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                    aria-hidden="true"
+                  />
+                  <Input
+                    id="nin"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    maxLength={NIN_LENGTH}
+                    placeholder="12345678901"
+                    value={nin}
+                    onChange={(e) => setNin(e.target.value.replace(/\D/g, ""))}
                     disabled={isLoading}
                     aria-invalid={Boolean(error)}
                     className="h-[52px] rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus-visible:border-[color:var(--kv-brand)] focus-visible:ring-[color:var(--kv-brand)]/20"
