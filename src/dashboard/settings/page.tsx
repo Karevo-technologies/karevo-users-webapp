@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import {
   Activity01Icon,
   BellIcon,
   Link01Icon,
   WifiOff01Icon,
-  LockIcon,
   Key01Icon,
   FingerPrintIcon,
   SmartPhone01Icon,
@@ -86,7 +85,7 @@ const initialDevices = [
 /* Small building blocks                                                  */
 /* ---------------------------------------------------------------------- */
 
-function RowIcon({ icon, tone }: { icon: React.ComponentType<{ size?: number; strokeWidth?: number }>; tone: string }) {
+function RowIcon({ icon, tone }: { icon: IconSvgElement; tone: string }) {
   const tones: Record<string, string> = {
     primary: "bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300",
     destructive: "bg-muted text-muted-foreground",
@@ -132,7 +131,7 @@ function SettingsRow({
   isLast,
   children,
 }: {
-  row: { title: string; description: string; type: string; icon: React.ComponentType; onClick?: () => void; control?: React.ReactNode; value?: string };
+  row: { title: string; description: string; type: string; icon: IconSvgElement; onClick?: () => void; control?: React.ReactNode; value?: string };
   isLast: boolean;
   children?: React.ReactNode;
 }) {
@@ -470,40 +469,6 @@ function RemoveDeviceDialog({
   );
 }
 
-function NinLockOffDialog({
-  open,
-  onOpenChange,
-  onConfirm,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-}) {
-  return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Turn off NIN Lock?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Your NIN will be shareable with anyone who requests it through K-ID
-            until you lock it again. Only turn this off if you're expecting a
-            request.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Keep it locked</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={onConfirm}
-            className="bg-muted text-foreground hover:bg-muted/70"
-          >
-            Turn off
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
 function ResetDeviceDialog({
   open,
   onOpenChange,
@@ -730,7 +695,7 @@ function TermsOfServiceModal({
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-  const [ninLock, setNinLock] = useState(true);
+  const [biometrics, setBiometrics] = useState(true);
   const [autoSignOut] = useState(true);
   const [autoSignOutMinutes] = useState(5);
 
@@ -739,7 +704,6 @@ export default function SettingsPage() {
   const [pinModalOpen, setPinModalOpen] = useState(false);
   const [devicesModalOpen, setDevicesModalOpen] = useState(false);
   const [removeDeviceTarget, setRemoveDeviceTarget] = useState<any>(null);
-  const [ninLockOffOpen, setNinLockOffOpen] = useState(false);
   const [resetDeviceOpen, setResetDeviceOpen] = useState(false);
 
   // Legal modals
@@ -747,21 +711,6 @@ export default function SettingsPage() {
   const [termsOfServiceOpen, setTermsOfServiceOpen] = useState(false);
 
   const { toast, fireToast } = useToast();
-
-  function handleNinLockToggle(value: boolean) {
-    if (!value) {
-      setNinLockOffOpen(true);
-      return;
-    }
-    setNinLock(true);
-    fireToast("NIN Lock turned on");
-  }
-
-  function confirmNinLockOff() {
-    setNinLock(false);
-    setNinLockOffOpen(false);
-    fireToast("NIN Lock turned off", "negative");
-  }
 
   function handleRemoveDevice(device: any) {
     setDevices((prev) => prev.filter((d: any) => d.id !== device.id));
@@ -811,16 +760,6 @@ export default function SettingsPage() {
   ];
 
   const securityRows = [
-    {
-      type: "toggle",
-      icon: LockIcon,
-      title: "NIN Lock",
-      description:
-        "Prevent organisations from sharing your NIN without your explicit approval",
-      control: (
-        <Switch checked={ninLock} onCheckedChange={handleNinLockToggle} />
-      ),
-    },
     {
       type: "toggle",
       icon: FingerPrintIcon,
@@ -953,11 +892,6 @@ export default function SettingsPage() {
         open={!!removeDeviceTarget}
         onOpenChange={(o) => !o && setRemoveDeviceTarget(null)}
         onConfirm={handleRemoveDevice}
-      />
-      <NinLockOffDialog
-        open={ninLockOffOpen}
-        onOpenChange={setNinLockOffOpen}
-        onConfirm={confirmNinLockOff}
       />
       <ResetDeviceDialog
         open={resetDeviceOpen}
